@@ -41,11 +41,13 @@ resource "azurerm_function_app" "func" {
   app_service_plan_id        = azurerm_service_plan.asp.id
   storage_account_name       = azurerm_storage_account.sa.name
   storage_account_access_key = azurerm_storage_account.sa.primary_access_key
-  version                    = "~3"
+  version                    = "~4"
   os_type                    = "linux"
+  https_only                 = true
 
   site_config {
-    linux_fx_version = "PYTHON|3.8"
+    linux_fx_version = "PYTHON|3.9"
+    ftps_state       = "FtpsOnly"
   }
 
   app_settings = {
