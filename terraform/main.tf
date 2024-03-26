@@ -9,10 +9,10 @@ module "naming" {
   unique-seed = data.azurerm_subscription.current.subscription_id
 }
 
-# Create a resource group to host the storage account and CDN profile
+# Create a resource group to host the backend resources
 resource "azurerm_resource_group" "rg" {
   location = var.resource_location
-  name     = "${module.naming.resource_group.name}-backend"
+  name     = module.naming.resource_group.name
 }
 
 # Create Storage Account to host the Function App
