@@ -33,3 +33,15 @@ variable "azure_dns_zone_resource_group_name" {
   description = "The name of the resource group the the Azure DNS zone is in."
   default     = "rg-dns"
 }
+
+variable "managed_identity_name" {
+  type        = string
+  description = "The name of the managed identity to retrieve."
+  default     = "id-github"
+}
+
+variable "managed_identity_resource_group" {
+  type        = string
+  description = "The resource group of the managed identity to retrieve."
+  default     = "rg-mid"
+}

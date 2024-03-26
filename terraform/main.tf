@@ -9,6 +9,12 @@ module "naming" {
   unique-seed = data.azurerm_subscription.current.subscription_id
 }
 
+# Get the Managed User Identity
+data "azurerm_user_assigned_identity" "mid" {
+  name                = var.managed_identity_name
+  resource_group_name = var.managed_identity_resource_group
+}
+
 # Create a resource group to host the backend resources
 resource "azurerm_resource_group" "rg" {
   location = var.resource_location
@@ -75,6 +81,15 @@ resource "azurerm_cosmosdb_account" "cosmosdb" {
   }
 }
 
+# Create a Role Assignment for the Managed Identity to access the CosmosDB account
+resource "azurerm_cosmosdb_sql_role_assignment" "cosmosdb_role_assignment" {
+  account_name        = azurerm_cosmosdb_account.cosmosdb.name
+  resource_group_name = azurerm_resource_group.rg.name
+  scope               = azurerm_cosmosdb_account.cosmosdb.id
+  role_definition_id  = "/providers/Microsoft.Authorization/roleDefinitions/230815da-be43-4aae-9cb4-875f7bd000aa" # Cosmos DB Account Contributor
+  principal_id        = data.azurerm_user_assigned_identity.mid.principal_id
+}
+
 # Create a container in the CosmosDB account
 resource "azurerm_cosmosdb_sql_container" "container" {
   name                = "items"
@@ -83,4 +98,5 @@ resource "azurerm_cosmosdb_sql_container" "container" {
   database_name       = "items"
   partition_key_path  = "/id"
   throughput          = 400
+  depends_on          = [azurerm_cosmosdb_sql_role_assignment.cosmosdb_role_assignment]
 }
