@@ -44,8 +44,7 @@ resource "azurerm_linux_function_app" "func" {
   https_only                 = true
 
   site_config {
-    linux_fx_version = "PYTHON|3.9"
-    ftps_state       = "FtpsOnly"
+    ftps_state = "FtpsOnly"
   }
 
   app_settings = {
