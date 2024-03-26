@@ -34,15 +34,13 @@ resource "azurerm_service_plan" "asp" {
 }
 
 # Create the Function App
-resource "azurerm_function_app" "func" {
+resource "azurerm_linux_function_app" "func" {
   location                   = azurerm_resource_group.rg.location
   name                       = module.naming.function_app.name
   resource_group_name        = azurerm_resource_group.rg.name
-  app_service_plan_id        = azurerm_service_plan.asp.id
+  service_plan_id            = azurerm_service_plan.asp.id
   storage_account_name       = azurerm_storage_account.sa.name
   storage_account_access_key = azurerm_storage_account.sa.primary_access_key
-  version                    = "~4"
-  os_type                    = "linux"
   https_only                 = true
 
   site_config {
@@ -57,7 +55,7 @@ resource "azurerm_function_app" "func" {
 
 # Create a very cheap CosmosDB account
 resource "azurerm_cosmosdb_account" "cosmosdb" {
-  name                      = module.naming.cosmosdb.name_unique
+  name                      = module.naming.cosmosdb_account.name_unique
   location                  = azurerm_resource_group.rg.location
   resource_group_name       = azurerm_resource_group.rg.name
   offer_type                = "Standard"
