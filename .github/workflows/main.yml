@@ -3,7 +3,7 @@ name: 'Build and deploy Backend'
 on:
   push:
     branches:
-    - master
+    - main
   workflow_dispatch:
 
 #Special permissions required for OIDC authentication.
