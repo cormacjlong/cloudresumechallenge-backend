@@ -29,7 +29,6 @@ resource "azurerm_service_plan" "asp" {
   location            = azurerm_resource_group.rg.location
   name                = module.naming.app_service_plan.name
   resource_group_name = azurerm_resource_group.rg.name
-  kind                = "FunctionApp"
   os_type             = "Linux"
   sku_name            = "Y1"
 }
