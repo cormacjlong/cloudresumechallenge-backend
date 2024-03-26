@@ -39,7 +39,7 @@ resource "azurerm_function_app" "func" {
   location                   = azurerm_resource_group.rg.location
   name                       = module.naming.function_app.name
   resource_group_name        = azurerm_resource_group.rg.name
-  app_service_plan_id        = azurerm_app_service_plan.asp.id
+  app_service_plan_id        = azurerm_service_plan.asp.id
   storage_account_name       = azurerm_storage_account.sa.name
   storage_account_access_key = azurerm_storage_account.sa.primary_access_key
   version                    = "~3"
