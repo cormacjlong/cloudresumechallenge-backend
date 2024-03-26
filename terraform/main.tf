@@ -52,7 +52,7 @@ resource "azurerm_linux_function_app" "func" {
   }
 }
 
-# Create a very cheap CosmosDB account
+# Create CosmosDB account
 resource "azurerm_cosmosdb_account" "cosmosdb" {
   name                      = module.naming.cosmosdb_account.name_unique
   location                  = azurerm_resource_group.rg.location
@@ -73,4 +73,14 @@ resource "azurerm_cosmosdb_account" "cosmosdb" {
   capabilities {
     name = "EnableServerless"
   }
+}
+
+# Create a container in the CosmosDB account
+resource "azurerm_cosmosdb_sql_container" "container" {
+  name                = "items"
+  resource_group_name = azurerm_resource_group.rg.name
+  account_name        = azurerm_cosmosdb_account.cosmosdb.name
+  database_name       = "items"
+  partition_key_path  = "/id"
+  throughput          = 400
 }
