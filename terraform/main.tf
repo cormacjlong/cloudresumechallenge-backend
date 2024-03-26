@@ -24,16 +24,14 @@ resource "azurerm_storage_account" "sa" {
   account_replication_type = "LRS"
 }
 
-# Create most basic App Service Plan with serverless pricing tier
-resource "azurerm_app_service_plan" "asp" {
+# Create  App Service Plan with serverless pricing tier
+resource "azurerm_service_plan" "asp" {
   location            = azurerm_resource_group.rg.location
   name                = module.naming.app_service_plan.name
   resource_group_name = azurerm_resource_group.rg.name
   kind                = "FunctionApp"
-  sku {
-    tier = "Dynamic"
-    size = "Y1"
-  }
+  os_type             = "Linux"
+  sku_name            = "Y1"
 }
 
 # Create the Function App
