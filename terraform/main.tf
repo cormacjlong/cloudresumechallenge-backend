@@ -36,7 +36,7 @@ resource "azurerm_service_plan" "asp" {
 # Create the Function App
 resource "azurerm_linux_function_app" "func" {
   location                   = azurerm_resource_group.rg.location
-  name                       = module.naming.function_app.name
+  name                       = module.naming.function_app.name_unique
   resource_group_name        = azurerm_resource_group.rg.name
   service_plan_id            = azurerm_service_plan.asp.id
   storage_account_name       = azurerm_storage_account.sa.name
