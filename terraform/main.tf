@@ -17,7 +17,7 @@ resource "azurerm_resource_group" "rg" {
 
 # Create Storage Account to host the Function App
 resource "azurerm_storage_account" "sa" {
-  name                     = module.naming.storage_account.unique_name
+  name                     = module.naming.storage_account.name_unique
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
