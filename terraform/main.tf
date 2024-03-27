@@ -131,3 +131,10 @@ resource "azurerm_role_assignment" "func_cosmosdb_role_assignment" {
   role_definition_name = "Cosmos DB Operator"
   principal_id         = azurerm_linux_function_app.func.identity.0.principal_id
 }
+
+# Create a Role Assignment for the main Managed Identity to access the Storage Account (for deployments to the Function App)
+resource "azurerm_role_assignment" "func_blobowner_storage_role_assignment" {
+  scope                = azurerm_storage_account.sa.id
+  role_definition_name = "Storage Blob Data Owner"
+  principal_id         = data.azurerm_user_assigned_identity.mid.principal_id
+}
