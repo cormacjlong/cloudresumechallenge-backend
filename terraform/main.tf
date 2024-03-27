@@ -67,6 +67,7 @@ resource "azurerm_cosmosdb_account" "cosmosdb" {
   kind                      = "GlobalDocumentDB"
   enable_automatic_failover = false
   enable_free_tier          = true
+  minimal_tls_version       = "Tls12"
   consistency_policy {
     consistency_level       = "BoundedStaleness"
     max_interval_in_seconds = 300
@@ -78,6 +79,9 @@ resource "azurerm_cosmosdb_account" "cosmosdb" {
   }
   capabilities {
     name = "EnableServerless"
+  }
+  capabilities {
+    name = "EnableTable"
   }
 }
 
