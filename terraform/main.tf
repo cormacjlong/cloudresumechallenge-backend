@@ -41,12 +41,13 @@ resource "azurerm_service_plan" "asp" {
 
 # Create the Function App
 resource "azurerm_linux_function_app" "func" {
-  location             = azurerm_resource_group.rg.location
-  name                 = module.naming.function_app.name_unique
-  resource_group_name  = azurerm_resource_group.rg.name
-  service_plan_id      = azurerm_service_plan.asp.id
-  storage_account_name = azurerm_storage_account.sa.name
-  https_only           = true
+  location                      = azurerm_resource_group.rg.location
+  name                          = module.naming.function_app.name_unique
+  resource_group_name           = azurerm_resource_group.rg.name
+  service_plan_id               = azurerm_service_plan.asp.id
+  storage_account_name          = azurerm_storage_account.sa.name
+  storage_uses_managed_identity = true
+  https_only                    = true
   app_settings = {
     "ENABLE_ORYX_BUILD"                = "true"
     "SCM_DO_BUILD_DURING_DEPLOYMENT"   = "true"
@@ -68,9 +69,13 @@ resource "azurerm_linux_function_app" "func" {
 
 # Create a Role Assignment for the Function App to access the Storage Account
 resource "azurerm_role_assignment" "func_storage_role_assignment" {
-  scope                = azurerm_storage_account.sa.id
-  role_definition_name = "Storage Blob Data Owner"
-  principal_id         = azurerm_linux_function_app.func.identity.0.principal_id
+  scope = azurerm_storage_account.sa.id
+  role_definition_name = [
+    "Storage Blob Data Owner",
+    "Storage Account Contributor",
+    "Storage Queue Data Contributor"
+  ]
+  principal_id = azurerm_linux_function_app.func.identity.0.principal_id
 }
 
 # Create CosmosDB account
