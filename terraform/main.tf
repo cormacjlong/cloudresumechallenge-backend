@@ -53,6 +53,7 @@ resource "azurerm_linux_function_app" "func" {
     "SCM_DO_BUILD_DURING_DEPLOYMENT" = "true"
     "FUNCTIONS_WORKER_RUNTIME"       = "python"
     "AzureWebJobsFeatureFlags"       = "EnableWorkerIndexing"
+    "cosmos_endpoint"                = azurerm_cosmosdb_account.cosmosdb.endpoint
   }
   site_config {
     ftps_state = "FtpsOnly"
