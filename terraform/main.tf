@@ -53,6 +53,10 @@ resource "azurerm_linux_function_app" "func" {
   }
   app_settings = {
     FUNCTIONS_WORKER_RUNTIME = "python"
+    application_stack = {
+      name    = "python"
+      version = "3.11"
+    }
   }
   identity {
     type = "SystemAssigned"
