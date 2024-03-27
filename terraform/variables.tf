@@ -12,7 +12,7 @@ variable "project_prefix" {
 
 variable "env" {
   type        = string
-  description = "The environment currently being deplyed."
+  description = "The environment currently being deployed."
   default     = "dev"
 }
 
@@ -24,7 +24,7 @@ variable "custom_url_prefix" {
 
 variable "azure_dns_zone_name" {
   type        = string
-  description = "The name of the Azure DNS zone to create."
+  description = "The name of the Azure DNS zone."
   default     = "az.macro-c.com"
 }
 

@@ -49,12 +49,11 @@ resource "azurerm_linux_function_app" "func" {
   storage_uses_managed_identity = true
   https_only                    = true
   app_settings = {
-    "ENABLE_ORYX_BUILD"                = "true"
-    "SCM_DO_BUILD_DURING_DEPLOYMENT"   = "true"
-    "FUNCTIONS_WORKER_RUNTIME"         = "python"
-    "AzureWebJobsFeatureFlags"         = "EnableWorkerIndexing"
-    "cosmos_endpoint"                  = azurerm_cosmosdb_account.cosmosdb.endpoint
-    "AzureWebJobsStorage__accountName" = azurerm_storage_account.sa.name
+    "ENABLE_ORYX_BUILD"              = "true"
+    "SCM_DO_BUILD_DURING_DEPLOYMENT" = "true"
+    "FUNCTIONS_WORKER_RUNTIME"       = "python"
+    "AzureWebJobsFeatureFlags"       = "EnableWorkerIndexing"
+    "cosmos_endpoint"                = azurerm_cosmosdb_account.cosmosdb.endpoint
   }
   site_config {
     ftps_state = "FtpsOnly"
