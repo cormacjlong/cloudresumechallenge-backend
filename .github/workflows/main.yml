@@ -131,3 +131,12 @@ jobs:
       id: tf-apply
       run: terraform apply -auto-approve tfplan | tee apply_output.txt
       working-directory: ./terraform
+
+    # Set Terraform Outputs
+    - name: Set Terraform Outputs
+      id: tf-apply-outputs
+      shell: pwsh
+      run: |
+        "function_app_name=$(((Select-String -Path ./apply_output.txt -Pattern 'function_app_name').line -split '"')[1])" >> $env:GITHUB_OUTPUT
+        "function_app_python_version=$(((Select-String -Path ./apply_output.txt -Pattern 'function_app_python_version').line -split '"')[1])" >> $env:GITHUB_OUTPUT
+      working-directory: ./terraform

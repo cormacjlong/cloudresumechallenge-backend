@@ -1,4 +1,5 @@
 import logging
+import os
 import azure.functions as func
 from azure.data.tables import TableServiceClient
 from azure.identity import DefaultAzureCredential
@@ -6,12 +7,14 @@ from azure.identity import DefaultAzureCredential
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request to increment the visitor count.')
 
+    cosmos_endpoint = os.environ["cosmos_endpoint"]
+
     # Initialize DefaultAzureCredential which will use the managed identity
     credential = DefaultAzureCredential()
 
     # Initialize TableServiceClient using the managed identity credential
     table_service_client = TableServiceClient(
-        account_url="https://cosmos-dev-crcbackend-b7a8.table.cosmos.azure.com:443/",
+        account_url=cosmos_endpoint,
         credential=credential
     )
 
