@@ -87,14 +87,14 @@ resource "azurerm_cosmosdb_account" "cosmosdb" {
 }
 
 # Create a Role Assignment for the main Managed Identity to access the CosmosDB account
-resource "azurerm_role_assignment" "cosmosdb_role_assignment" {
+resource "azurerm_role_assignment" "main_cosmosdb_role_assignment" {
   scope                = azurerm_cosmosdb_account.cosmosdb.id
   role_definition_name = "Cosmos DB Operator"
   principal_id         = data.azurerm_user_assigned_identity.mid.principal_id
 }
 
 # Create a Role Assignment for the Function App Managed Identity to access the CosmosDB account
-resource "azurerm_role_assignment" "cosmosdb_role_assignment" {
+resource "azurerm_role_assignment" "func_cosmosdb_role_assignment" {
   scope                = azurerm_cosmosdb_account.cosmosdb.id
   role_definition_name = "Cosmos DB Operator"
   principal_id         = azurerm_linux_function_app.func.identity.principal_id
