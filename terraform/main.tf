@@ -23,7 +23,7 @@ resource "azurerm_resource_group" "rg" {
 
 # Create Storage Account to host the Function App
 resource "azurerm_storage_account" "sa" {
-  name                     = module.naming.storage_account.name_unique
+  name                     = "st${replace(module.naming.function_app.name_unique, "-", "")}"
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
@@ -92,14 +92,11 @@ resource "azurerm_role_assignment" "cosmosdb_role_assignment" {
   principal_id         = data.azurerm_user_assigned_identity.mid.principal_id
 }
 
-/* # Create a container in the CosmosDB account
-resource "azurerm_cosmosdb_sql_container" "container" {
-  name                = "items"
-  resource_group_name = azurerm_resource_group.rg.name
+# Create a table in the CosmosDB account
+resource "azurerm_cosmosdb_table" "cosmos_table" {
+  name                = "table-${var.env}-${var.project_prefix}"
+  resource_group_name = azurerm_cosmosdb_account.cosmosdb.resource_group_name
   account_name        = azurerm_cosmosdb_account.cosmosdb.name
-  database_name       = "items"
-  partition_key_path  = "/id"
   throughput          = 400
-  depends_on          = [azurerm_role_assignment.cosmosdb_role_assignment]
 }
- */
+
