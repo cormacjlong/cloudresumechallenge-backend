@@ -224,7 +224,7 @@ resource "azurerm_key_vault" "kv" {
   name                            = module.naming.key_vault.name_unique
   resource_group_name             = azurerm_resource_group.rg.name
   tenant_id                       = data.azurerm_client_config.current.tenant_id
-  sku_name                        = "basic"
+  sku_name                        = "standard"
   enabled_for_disk_encryption     = true
   enabled_for_deployment          = true
   enabled_for_template_deployment = true
