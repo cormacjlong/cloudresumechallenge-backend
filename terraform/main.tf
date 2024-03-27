@@ -48,14 +48,18 @@ resource "azurerm_linux_function_app" "func" {
   storage_account_name       = azurerm_storage_account.sa.name
   storage_account_access_key = azurerm_storage_account.sa.primary_access_key
   https_only                 = true
+  app_settings = {
+    "ENABLE_ORYX_BUILD"              = "true"
+    "SCM_DO_BUILD_DURING_DEPLOYMENT" = "true"
+    "FUNCTIONS_WORKER_RUNTIME"       = "python"
+    "AzureWebJobsFeatureFlags"       = "EnableWorkerIndexing"
+  }
+
   site_config {
     ftps_state = "FtpsOnly"
-  }
-  app_settings = {
-    application_stack = "python|3.11"
-  }
-  identity {
-    type = "SystemAssigned"
+    application_stack {
+      python_version = "3.11"
+    }
   }
 }
 
