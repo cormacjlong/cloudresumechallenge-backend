@@ -45,3 +45,9 @@ variable "managed_identity_resource_group" {
   description = "The resource group of the managed identity to retrieve."
   default     = "rg-mid"
 }
+
+variable "cosmos_table_name" {
+  type        = string
+  description = "The name of the CosmosDB table."
+  default     = "VisitorCountTable"
+}
