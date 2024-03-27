@@ -66,7 +66,8 @@ resource "azurerm_linux_function_app" "func" {
   }
   lifecycle {
     ignore_changes = [
-      app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"]
+      app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"],
+      app_settings["WEBSITE_RUN_FROM_PACKAGE"]
     ]
   }
 }
