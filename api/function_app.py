@@ -26,7 +26,7 @@ def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
         credential = DefaultAzureCredential()
 
         # Initialize TableServiceClient using the managed identity credential
-        table_service_client = TableServiceClient(account_url=cosmos_endpoint, credential=credential)
+        table_service_client = TableServiceClient(endpoint=cosmos_endpoint, credential=credential)
         logging.info('TableServiceClient initialized.')
 
         # Reference to the table
