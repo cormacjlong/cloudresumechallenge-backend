@@ -102,7 +102,7 @@ resource "azurerm_role_assignment" "func_cosmosdb_role_assignment" {
 
 # Create a table in the CosmosDB account
 resource "azurerm_cosmosdb_table" "cosmos_table" {
-  name                = "table-${var.env}-${var.project_prefix}"
+  name                = "VisitorCountTable"
   resource_group_name = azurerm_cosmosdb_account.cosmosdb.resource_group_name
   account_name        = azurerm_cosmosdb_account.cosmosdb.name
   depends_on          = [azurerm_role_assignment.main_cosmosdb_role_assignment]
