@@ -97,7 +97,7 @@ resource "azurerm_role_assignment" "main_cosmosdb_role_assignment" {
 resource "azurerm_role_assignment" "func_cosmosdb_role_assignment" {
   scope                = azurerm_cosmosdb_account.cosmosdb.id
   role_definition_name = "Cosmos DB Operator"
-  principal_id         = azurerm_linux_function_app.func.identity.principal_id
+  principal_id         = azurerm_linux_function_app.func.identity[0].principal_id
 }
 
 # Create a table in the CosmosDB account
@@ -105,6 +105,6 @@ resource "azurerm_cosmosdb_table" "cosmos_table" {
   name                = "table-${var.env}-${var.project_prefix}"
   resource_group_name = azurerm_cosmosdb_account.cosmosdb.resource_group_name
   account_name        = azurerm_cosmosdb_account.cosmosdb.name
-  depends_on          = [azurerm_role_assignment.cosmosdb_role_assignment]
+  depends_on          = [azurerm_role_assignment.main_cosmosdb_role_assignment]
 }
 
