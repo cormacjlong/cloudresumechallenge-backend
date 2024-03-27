@@ -69,7 +69,7 @@ resource "azurerm_linux_function_app" "func" {
 # Create a Role Assignment for the Function App to access the Storage Account
 resource "azurerm_role_assignment" "func_storage_role_assignment" {
   scope                = azurerm_storage_account.sa.id
-  role_definition_name = "Storage Account Owner"
+  role_definition_name = "Storage Blob Data Owner"
   principal_id         = azurerm_linux_function_app.func.identity.0.principal_id
 }
 
