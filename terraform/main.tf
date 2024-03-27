@@ -202,7 +202,7 @@ resource "azurerm_monitor_diagnostic_setting" "cosmos_diag_setting" {
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
 
   dynamic "metric" {
-    for_each = data.azurerm_monitor_diagnostic_categories.func_diag_categories.metrics
+    for_each = data.azurerm_monitor_diagnostic_categories.cosmos_diag_categories.metrics
     content {
       category = metric.value
       enabled  = false
@@ -210,7 +210,7 @@ resource "azurerm_monitor_diagnostic_setting" "cosmos_diag_setting" {
   }
 
   dynamic "enabled_log" {
-    for_each = data.azurerm_monitor_diagnostic_categories.func_diag_categories.log_category_types
+    for_each = data.azurerm_monitor_diagnostic_categories.cosmos_diag_categories.log_category_types
     content {
       category = enabled_log.value
     }
