@@ -165,7 +165,7 @@ resource "azurerm_application_insights" "ai" {
   workspace_id        = azurerm_log_analytics_workspace.law.id
 }
 
-# Set Diagnostic Logging on Function App to go to Application Insights
+# Set Diagnostic Logging on Function App
 data "azurerm_monitor_diagnostic_categories" "func_diag_categories" {
   resource_id = azurerm_linux_function_app.func.id
 }
@@ -173,6 +173,32 @@ data "azurerm_monitor_diagnostic_categories" "func_diag_categories" {
 resource "azurerm_monitor_diagnostic_setting" "func_diag_setting" {
   name                       = "diag-${azurerm_linux_function_app.func.name}"
   target_resource_id         = azurerm_linux_function_app.func.id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
+
+  dynamic "metric" {
+    for_each = data.azurerm_monitor_diagnostic_categories.func_diag_categories.metrics
+    content {
+      category = metric.value
+      enabled  = false
+    }
+  }
+
+  dynamic "enabled_log" {
+    for_each = data.azurerm_monitor_diagnostic_categories.func_diag_categories.log_category_types
+    content {
+      category = enabled_log.value
+    }
+  }
+}
+
+# Set Diagnostic Logging on Cosmos
+data "azurerm_monitor_diagnostic_categories" "cosmos_diag_categories" {
+  resource_id = azurerm_cosmosdb_account.cosmosdb.id
+}
+
+resource "azurerm_monitor_diagnostic_setting" "cosmos_diag_setting" {
+  name                       = "diag-${azurerm_cosmosdb_account.cosmosdb.name}"
+  target_resource_id         = azurerm_cosmosdb_account.cosmosdb.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
 
   dynamic "metric" {
