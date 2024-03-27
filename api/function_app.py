@@ -1,50 +1,25 @@
-import logging
-import os
 import azure.functions as func
-from azure.data.tables import TableServiceClient
-from azure.identity import DefaultAzureCredential
+import logging
 
-@app.function_name(name="HttpTrigger1")
-@app.route(route="hello")
+app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
-def main(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request to increment the visitor count.')
+@app.route(route="visitorcounter")
+def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python HTTP trigger function processed a request.')
 
-    cosmos_endpoint = os.environ["cosmos_endpoint"]
+    name = req.params.get('name')
+    if not name:
+        try:
+            req_body = req.get_json()
+        except ValueError:
+            pass
+        else:
+            name = req_body.get('name')
 
-    # Initialize DefaultAzureCredential which will use the managed identity
-    credential = DefaultAzureCredential()
-
-    # Initialize TableServiceClient using the managed identity credential
-    table_service_client = TableServiceClient(
-        account_url=cosmos_endpoint,
-        credential=credential
-    )
-
-    # Reference to the table
-    table_client = table_service_client.get_table_client(table_name="VisitorCountTable")
-
-    try:
-        # Attempt to fetch the existing count
-        entity = table_client.get_entity(partition_key="VisitorCounter", row_key="Counter")
-        count = entity['Count']
-    except Exception as e:
-        # If not found, initialize the count
-        logging.info('Initializing the visitor count.')
-        count = 0
-        entity = {
-            'PartitionKey': 'VisitorCounter',
-            'RowKey': 'Counter',
-            'Count': count
-        }
-        table_client.create_entity(entity=entity)
-
-    # Increment the count
-    count += 1
-    entity['Count'] = count
-
-    # Update the entity in the table
-    table_client.update_entity(entity)
-
-    # Return the new count as a response
-    return func.HttpResponse(f"Visitor count: {count}", status_code=200)
+    if name:
+        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
+    else:
+        return func.HttpResponse(
+             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
+             status_code=200
+        )
