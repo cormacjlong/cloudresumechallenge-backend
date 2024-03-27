@@ -97,7 +97,7 @@ resource "azurerm_role_assignment" "cosmosdb_role_assignment" {
 resource "azurerm_role_assignment" "cosmosdb_role_assignment" {
   scope                = azurerm_cosmosdb_account.cosmosdb.id
   role_definition_name = "Cosmos DB Operator"
-  principal_id         = azurerm_linux_function_app.func.identity[0].principal_id
+  principal_id         = azurerm_linux_function_app.func.identity.principal_id
 }
 
 # Create a table in the CosmosDB account
