@@ -56,7 +56,8 @@ resource "azurerm_linux_function_app" "func" {
     "cosmos_endpoint"                = "https://${azurerm_cosmosdb_account.cosmosdb.name}.table.cosmos.azure.com:443/"
   }
   site_config {
-    ftps_state = "FtpsOnly"
+    ftps_state               = "FtpsOnly"
+    application_insights_key = azurerm_application_insights.ai.instrumentation_key
     application_stack {
       python_version = "3.11"
     }
@@ -143,4 +144,22 @@ resource "azurerm_role_assignment" "mi_blobowner_storage_role_assignment" {
   scope                = azurerm_storage_account.sa.id
   role_definition_name = "Storage Blob Data Owner"
   principal_id         = data.azurerm_user_assigned_identity.mid.principal_id
+}
+
+# Create a Log Analytics Workspace for Application Insights
+resource "azurerm_log_analytics_workspace" "law" {
+  location            = azurerm_resource_group.rg.location
+  name                = module.naming.log_analytics_workspace.name
+  resource_group_name = azurerm_resource_group.rg.name
+  sku                 = "PerGB2018"
+  retention_in_days   = 1
+}
+
+# Create Application Insights
+resource "azurerm_application_insights" "ai" {
+  location            = azurerm_resource_group.rg.location
+  name                = module.naming.application_insights.name
+  resource_group_name = azurerm_resource_group.rg.name
+  application_type    = "other"
+  workspace_id        = azurerm_log_analytics_workspace.law.id
 }
