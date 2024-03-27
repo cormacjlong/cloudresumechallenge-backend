@@ -97,6 +97,6 @@ resource "azurerm_cosmosdb_table" "cosmos_table" {
   name                = "table-${var.env}-${var.project_prefix}"
   resource_group_name = azurerm_cosmosdb_account.cosmosdb.resource_group_name
   account_name        = azurerm_cosmosdb_account.cosmosdb.name
-  throughput          = 400
+  depends_on          = [azurerm_role_assignment.cosmosdb_role_assignment]
 }
 
