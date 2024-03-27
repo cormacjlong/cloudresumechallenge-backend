@@ -92,7 +92,7 @@ resource "azurerm_role_assignment" "cosmosdb_role_assignment" {
   principal_id         = data.azurerm_user_assigned_identity.mid.principal_id
 }
 
-# Create a container in the CosmosDB account
+/* # Create a container in the CosmosDB account
 resource "azurerm_cosmosdb_sql_container" "container" {
   name                = "items"
   resource_group_name = azurerm_resource_group.rg.name
@@ -102,3 +102,4 @@ resource "azurerm_cosmosdb_sql_container" "container" {
   throughput          = 400
   depends_on          = [azurerm_role_assignment.cosmosdb_role_assignment]
 }
+ */
