@@ -48,11 +48,12 @@ resource "azurerm_linux_function_app" "func" {
   storage_account_name = azurerm_storage_account.sa.name
   https_only           = true
   app_settings = {
-    "ENABLE_ORYX_BUILD"              = "true"
-    "SCM_DO_BUILD_DURING_DEPLOYMENT" = "true"
-    "FUNCTIONS_WORKER_RUNTIME"       = "python"
-    "AzureWebJobsFeatureFlags"       = "EnableWorkerIndexing"
-    "cosmos_endpoint"                = azurerm_cosmosdb_account.cosmosdb.endpoint
+    "ENABLE_ORYX_BUILD"                = "true"
+    "SCM_DO_BUILD_DURING_DEPLOYMENT"   = "true"
+    "FUNCTIONS_WORKER_RUNTIME"         = "python"
+    "AzureWebJobsFeatureFlags"         = "EnableWorkerIndexing"
+    "cosmos_endpoint"                  = azurerm_cosmosdb_account.cosmosdb.endpoint
+    "AzureWebJobsStorage__accountName" = azurerm_storage_account.sa.name
   }
   site_config {
     ftps_state = "FtpsOnly"
@@ -68,7 +69,7 @@ resource "azurerm_linux_function_app" "func" {
 # Create a Role Assignment for the Function App to access the Storage Account
 resource "azurerm_role_assignment" "func_storage_role_assignment" {
   scope                = azurerm_storage_account.sa.id
-  role_definition_name = "Storage Account Contributor"
+  role_definition_name = "Storage Account Owner"
   principal_id         = azurerm_linux_function_app.func.identity.0.principal_id
 }
 
