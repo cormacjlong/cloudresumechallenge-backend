@@ -54,12 +54,14 @@ resource "azurerm_linux_function_app" "func" {
     "FUNCTIONS_WORKER_RUNTIME"       = "python"
     "AzureWebJobsFeatureFlags"       = "EnableWorkerIndexing"
   }
-
   site_config {
     ftps_state = "FtpsOnly"
     application_stack {
       python_version = "3.11"
     }
+  }
+  identity {
+    type = "SystemAssigned"
   }
 }
 
