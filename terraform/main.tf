@@ -153,6 +153,7 @@ resource "azurerm_log_analytics_workspace" "law" {
   resource_group_name = azurerm_resource_group.rg.name
   sku                 = "PerGB2018"
   retention_in_days   = 30
+  daily_quota_gb      = 1
 }
 
 # Create Application Insights
@@ -162,4 +163,30 @@ resource "azurerm_application_insights" "ai" {
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "other"
   workspace_id        = azurerm_log_analytics_workspace.law.id
+}
+
+# Set Diagnostic Logging on Function App to go to Application Insights
+data "azurerm_monitor_diagnostic_categories" "func_diag_categories" {
+  resource_id = azurerm_linux_function_app.func.id
+}
+
+resource "azurerm_monitor_diagnostic_setting" "func_diag_setting" {
+  name                       = "diag-${azurerm_linux_function_app.func.name}"
+  target_resource_id         = azurerm_linux_function_app.func.id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
+
+  dynamic "metric" {
+    for_each = data.azurerm_monitor_diagnostic_categories.func_diag_categories.metrics
+    content {
+      category = metric.value
+      enabled  = false
+    }
+  }
+
+  dynamic "enabled_log" {
+    for_each = data.azurerm_monitor_diagnostic_categories.func_diag_categories.log_category_types
+    content {
+      category = enabled_log.value
+    }
+  }
 }
