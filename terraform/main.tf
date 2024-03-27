@@ -64,6 +64,11 @@ resource "azurerm_linux_function_app" "func" {
   identity {
     type = "SystemAssigned"
   }
+  lifecycle {
+    ignore_changes = [
+      app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"]
+    ]
+  }
 }
 
 # Create a Role Assignment for the Function App to access the Storage Account
