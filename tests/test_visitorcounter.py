@@ -1,9 +1,9 @@
 # test_visitorcounter.py inside the api/tests directory
-import sys
-sys.path.append("~/work/cloudresumechallenge-backend/cloudresumechallenge-backend/api/.python_packages/lib/site-packages")
+# import sys
+# sys.path.append("~/work/cloudresumechallenge-backend/cloudresumechallenge-backend/api/.python_packages/lib/site-packages")
+import azure.functions as func
 import unittest
 from unittest.mock import Mock, patch
-import azure.functions as func
 from .api.function_app import app  # This imports the app
 
 class TestVisitorCounterFunction(unittest.TestCase):
