@@ -173,10 +173,14 @@ jobs:
         popd
 
     - name: Print the current working directory
-      run: pwd
+      run: |
+        pushd './api/'
+        pwd
   
     - name: List all installed Python packages
-      run: pip list
+      run: |
+        pushd './api/'
+        pip list
 
     - name: Run Python Tests
       run: |
