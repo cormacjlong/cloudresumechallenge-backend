@@ -164,7 +164,7 @@ jobs:
       with:
         python-version: ${{ needs.terraform-apply.outputs.function_app_python_version }}
 
-    - name: Resolve Project Dependencies Using Pip
+    - name: Resolve Project Dependencies
       shell: bash
       run: |
         pushd './api/'
@@ -174,7 +174,7 @@ jobs:
 
     - name: Run Python Tests
       run: |
-        python -m unittest discover tests -t .
+        python -m unittest discover tests -t ./api/
 
     - name: Login to Azure
       id: LoginToAzure
