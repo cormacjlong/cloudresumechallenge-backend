@@ -26,7 +26,7 @@ class TestVisitorCounterFunction(unittest.TestCase):
         # Create a fake HttpRequest
         req = func.HttpRequest(
             method='GET',
-            url='visitorcounter',
+            url='/api',
             body=None,
         )
 
