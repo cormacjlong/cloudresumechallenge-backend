@@ -26,9 +26,8 @@ class TestVisitorCounterFunction(unittest.TestCase):
         # Create a fake HttpRequest
         req = func.HttpRequest(
             method='GET',
-            url='/visitorcounter',
+            url='/api/visitorcounter',
             body=None,
-            headers={'Content-Type': 'text/plain; charset=utf-8'},
         )
 
         # Call the Azure Function directly
