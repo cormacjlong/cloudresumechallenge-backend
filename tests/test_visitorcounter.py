@@ -4,7 +4,7 @@
 import azure.functions as func
 import unittest
 from unittest.mock import Mock, patch
-from .api.function_app import app  # This imports the app
+from api.function_app import app  # This imports the app
 
 class TestVisitorCounterFunction(unittest.TestCase):
 
