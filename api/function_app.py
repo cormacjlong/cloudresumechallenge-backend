@@ -68,4 +68,4 @@ def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
 
     # Return the new count as a response
     logging.info(f'Returning the new visitor count: {count}')
-    return func.HttpResponse(f"Visitor count: {count}", status_code=200)
+    return func.HttpResponse(f"{count}", status_code=200)
