@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock, patch
 import azure.functions as func
-from function_app import visitorcounter  # Adjusted import
+from function_app import visitorcounte
 
 class TestVisitorCounterFunction(unittest.TestCase):
 

@@ -8,7 +8,6 @@ app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 @app.route(route="visitorcounter")
 def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
-    print("Test message from visitorcounter function.")
     return func.HttpResponse("Temporary response", status_code=200)
     logging.info('Python HTTP trigger function processed a request to increment the visitor count.')
 
@@ -20,8 +19,6 @@ def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
             "COSMOS_ENDPOINT environment variable is not set.",
             status_code=500
         )
-
-    logging.info(f'Using Cosmos DB endpoint: {cosmos_connection_string}')
 
     try:
         # Initialize DefaultAzureCredential which will use the managed identity
