@@ -172,6 +172,12 @@ jobs:
         pip install -r requirements.txt --target=".python_packages/lib/site-packages"
         popd
 
+    - name: Check the current working directory
+      run: pwd
+      
+    - name: List installed packages
+      run: pip freeze
+
     - name: Run tests on API
       run: python -m unittest discover -s api/tests
       

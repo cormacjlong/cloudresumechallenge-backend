@@ -63,8 +63,7 @@ resource "azurerm_linux_function_app" "func" {
   site_config {
     cors {
       allowed_origins = [
-        "https://stdevcrcfrontendb7a8.z16.web.core.windows.net",
-        "https://cv.az.macro-c.com"
+        "https://${var.custom_url_prefix}.${var.azure_dns_zone_name}"
       ]
     }
     ftps_state               = "FtpsOnly"
