@@ -26,14 +26,14 @@ class TestVisitorCounterFunction(unittest.TestCase):
         # Create a fake HttpRequest
         req = func.HttpRequest(
             method='GET',
-            url='/api/visitorcounter',
+            url='/visitorcounter',
             body=None,
         )
 
         # Call the Azure Function directly
         response = visitorcounter(req)
 
-        # Print the type and representation of the response for debugging   <--------- Debugging
+        # Print the type and representation of the response for debugging   <--------- Remove me later
         print(f"Response type: {type(response)}")
         print(f"Response: {repr(response)}")
 
