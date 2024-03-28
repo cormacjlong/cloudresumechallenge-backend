@@ -175,16 +175,6 @@ jobs:
     - name: Add dependencies folder to Python Path
       run: echo "PYTHONPATH=${GITHUB_WORKSPACE}/api/.python_packages/lib/site-packages" >> $GITHUB_ENV
 
-
-    - name: Print the current working directory
-      run: |
-        pwd
-        ls -l
-  
-    - name: List all installed Python packages
-      run: |
-        pip list
-
     - name: Run Python Tests
       run: |
         pushd './api/'

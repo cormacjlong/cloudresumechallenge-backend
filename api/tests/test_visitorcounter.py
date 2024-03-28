@@ -1,17 +1,14 @@
 # test_visitorcounter.py inside the api/tests directory
-# import sys
-# import os
-# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'api')))
 
-import azure.functions as func
 import unittest
 from unittest.mock import Mock, patch
-from function_app import app  # This imports the app
+import azure.functions as func
+from function_app import visitorcounter  # Adjusted import
 
 class TestVisitorCounterFunction(unittest.TestCase):
 
-    @patch('function_app.os.getenv')
-    @patch('function_app.TableServiceClient')
+    @patch('api.function_app.os.getenv')
+    @patch('api.function_app.TableServiceClient')
     def test_visitor_counter_function(self, mock_table_service_client, mock_getenv):
         # Mocking os.getenv to return a fake connection string
         mock_getenv.return_value = 'FakeConnectionString'
@@ -34,8 +31,8 @@ class TestVisitorCounterFunction(unittest.TestCase):
             headers={'Content-Type': 'application/json'},
         )
 
-        # Call the Azure Function
-        response = app._func.visitorcounter(req)
+        # Call the Azure Function directly
+        response = visitorcounter(req)
 
         # Assertions to ensure the function behaved as expected
         self.assertEqual(response.status_code, 200)
