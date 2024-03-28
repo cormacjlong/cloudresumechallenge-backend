@@ -56,6 +56,11 @@ resource "azurerm_linux_function_app" "func" {
     "cosmos_endpoint"                = azurerm_cosmosdb_account.cosmosdb.endpoint
     /* "cosmos_endpoint"                = "https://${azurerm_cosmosdb_account.cosmosdb.name}.table.cosmos.azure.com:443/" */
   }
+  connection_string {
+    name  = "Default"
+    type  = "Custom"
+    value = "VaultName=${azurerm_key_vault.kv.name};SecretName=${var.connection_string_secret_name}"
+  }
   site_config {
     ftps_state               = "FtpsOnly"
     application_insights_key = azurerm_application_insights.ai.instrumentation_key
@@ -131,13 +136,6 @@ resource "azurerm_cosmosdb_table" "cosmos_table" {
   resource_group_name = azurerm_cosmosdb_account.cosmosdb.resource_group_name
   account_name        = azurerm_cosmosdb_account.cosmosdb.name
   depends_on          = [azurerm_role_assignment.main_cosmosdb_role_assignment]
-}
-
-# Create a Role Assignment for the Function App Managed Identity to access the CosmosDB account
-resource "azurerm_role_assignment" "func_cosmosdb_role_assignment" {
-  scope                = azurerm_cosmosdb_account.cosmosdb.id
-  role_definition_name = "DocumentDB Account Contributor"
-  principal_id         = azurerm_linux_function_app.func.identity.0.principal_id
 }
 
 # Create a Role Assignment for the main Managed Identity to access the Storage Account (for deployments to the Function App)
@@ -230,4 +228,25 @@ resource "azurerm_key_vault" "kv" {
   enabled_for_template_deployment = true
   purge_protection_enabled        = false
   enable_rbac_authorization       = true
+}
+
+# Create a Role Assignment for the Function App Managed Identity to access the Keyvault
+resource "azurerm_role_assignment" "func_cosmosdb_role_assignment" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = azurerm_linux_function_app.func.identity.0.principal_id
+}
+
+# Create a Role Assignment for the main Managed Identity to access the Keyvault
+resource "azurerm_role_assignment" "mi_cosmosdb_role_assignment" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Administrator"
+  principal_id         = data.azurerm_user_assigned_identity.mid.principal_id
+}
+
+# Add Cosmos DB connection string to Keyvault
+resource "azurerm_key_vault_secret" "cosmosdb_connection_string" {
+  name         = var.connection_string_secret_name
+  value        = azurerm_cosmosdb_account.cosmosdb.connection_strings.0.connection_string
+  key_vault_id = azurerm_key_vault.kv.id
 }

@@ -51,3 +51,9 @@ variable "cosmos_table_name" {
   description = "The name of the CosmosDB table."
   default     = "VisitorCountTable"
 }
+
+variable "connection_string_secret_name" {
+  type        = string
+  description = "The name of the secret that holds the connection string."
+  default     = "cosmosdb-connection-string"
+}
