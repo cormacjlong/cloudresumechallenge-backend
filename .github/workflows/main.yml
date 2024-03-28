@@ -173,13 +173,19 @@ jobs:
         popd
 
     - name: Check the current working directory
-      run: pwd
+      run: |
+        pushd './api/'
+        pwd
       
     - name: List installed packages
-      run: pip freeze
+      run: |
+        pushd './api/'
+        pip freeze
 
     - name: Run tests on API
-      run: python -m unittest discover -s api/tests
+      run: |
+        pushd './api/'
+        python -m unittest discover -s api/tests
       
 
     - name: Login to Azure
