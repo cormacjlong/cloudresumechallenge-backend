@@ -247,7 +247,7 @@ resource "azurerm_role_assignment" "mi_keyvault_role_assignment" {
 # Add Cosmos DB connection string to Keyvault
 resource "azurerm_key_vault_secret" "cosmosdb_connection_string" {
   name         = var.connection_string_secret_name
-  value        = azurerm_cosmosdb_account.cosmosdb.primary_sql_connection_string
+  value        = "DefaultEndpointsProtocol=https;AccountName=${azurerm_cosmosdb_account.cosmosdb.name};AccountKey=${azurerm_cosmosdb_account.cosmosdb.primary_key};TableEndpoint=https://${azurerm_cosmosdb_account.cosmosdb.name}.table.cosmos.azure.com:443/;"
   key_vault_id = azurerm_key_vault.kv.id
   depends_on   = [azurerm_role_assignment.mi_keyvault_role_assignment]
 }
