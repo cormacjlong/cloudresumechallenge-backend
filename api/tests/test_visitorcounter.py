@@ -3,12 +3,12 @@
 import unittest
 from unittest.mock import Mock, patch
 import azure.functions as func
-from api.function_app import visitorcounter  # Adjusted import
+from function_app import visitorcounter  # Adjusted import
 
 class TestVisitorCounterFunction(unittest.TestCase):
 
-    @patch('api.function_app.os.getenv')
-    @patch('api.function_app.TableServiceClient')
+    @patch('function_app.os.getenv')
+    @patch('function_app.TableServiceClient')
     def test_visitor_counter_function(self, mock_table_service_client, mock_getenv):
         # Mocking os.getenv to return a fake connection string
         mock_getenv.return_value = 'FakeConnectionString'
