@@ -64,6 +64,12 @@ resource "azurerm_linux_function_app" "func" {
   site_config {
     ftps_state               = "FtpsOnly"
     application_insights_key = azurerm_application_insights.ai.instrumentation_key
+    cors {
+      allowed_origins = [
+        "https://stdevcrcfrontendb7a8.z16.web.core.windows.net",
+        "https://cv.az.macro-c.com"
+      ]
+    }
     application_stack {
       python_version = "3.11"
     }
