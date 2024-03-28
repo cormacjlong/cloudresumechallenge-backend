@@ -169,12 +169,13 @@ jobs:
       run: |
         pushd './api/'
         python -m pip install --upgrade pip
-        pip install --target="$(System.DefaultWorkingDirectory)/.python_packages/lib/site-packages" -r requirements.txt
+        pip install -r requirements.txt --target=".python_packages/lib/site-packages"
         popd
 
     - name: Run Python Tests
       run: |
-        python -m unittest discover -s tests      
+        pushd './api/'
+        python -m unittest discover -s ../tests      
 
     - name: Login to Azure
       id: LoginToAzure
