@@ -1,6 +1,6 @@
 # test_visitorcounter.py inside the api/tests directory
 import sys
-sys.path.append('<absolute_path_to_your_project>/api/.python_packages/lib/site-packages')
+sys.path.append('/home/runner/work/cloudresumechallenge-backend/cloudresumechallenge-backend/api/.python_packages/lib/site-packages')
 import unittest
 from unittest.mock import Mock, patch
 import azure.functions as func

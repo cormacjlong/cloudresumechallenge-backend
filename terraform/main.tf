@@ -182,6 +182,12 @@ resource "azurerm_monitor_diagnostic_setting" "func_diag_setting" {
       category = enabled_log.value
     }
   }
+  # Ignoring changes to the metric category
+  lifecycle {
+    ignore_changes = [
+      metric
+    ]
+  }
 }
 
 # Set Diagnostic Logging on Cosmos
@@ -199,6 +205,12 @@ resource "azurerm_monitor_diagnostic_setting" "cosmos_diag_setting" {
     content {
       category = enabled_log.value
     }
+  }
+  # Ignoring changes to the metric category
+  lifecycle {
+    ignore_changes = [
+      metric
+    ]
   }
 }
 
