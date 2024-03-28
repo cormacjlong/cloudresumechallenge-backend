@@ -164,7 +164,7 @@ jobs:
       with:
         python-version: ${{ needs.terraform-apply.outputs.function_app_python_version }}
 
-    - name: Resolve Project Dependencies
+    - name: Package dependencies for deployment
       shell: bash
       run: |
         pushd './api/'
@@ -172,14 +172,18 @@ jobs:
         pip install -r requirements.txt --target=".python_packages/lib/site-packages"
         popd
 
+    - name: Install dependencies for Testing
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r api/requirements.txt
+
+
     - name: Print the current working directory
       run: |
-        pushd './api/'
         pwd
   
     - name: List all installed Python packages
       run: |
-        pushd './api/'
         pip list
 
     - name: Run Python Tests
