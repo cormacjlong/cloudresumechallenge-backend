@@ -61,15 +61,13 @@ resource "azurerm_linux_function_app" "func" {
     value = "@Microsoft.KeyVault(VaultName=${azurerm_key_vault.kv.name};SecretName=${var.connection_string_secret_name})"
   }
   site_config {
-    cors {
-      allowed_origins = [
-        "https://${var.custom_url_prefix}.${var.azure_dns_zone_name}"
-      ]
-    }
     ftps_state               = "FtpsOnly"
     application_insights_key = azurerm_application_insights.ai.instrumentation_key
     application_stack {
       python_version = "3.11"
+    }
+    cors {
+      allowed_origins = ["https://${var.custom_url_prefix}.${var.azure_dns_zone_name}"]
     }
   }
   identity {
