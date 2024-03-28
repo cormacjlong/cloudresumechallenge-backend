@@ -169,7 +169,7 @@ jobs:
       run: |
         pushd './api/'
         python -m pip install --upgrade pip
-        pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+        pip install --target="$(System.DefaultWorkingDirectory)/.python_packages/lib/site-packages" -r requirements.txt
         popd
 
     - name: Run Python Tests
