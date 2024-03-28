@@ -54,7 +54,6 @@ resource "azurerm_linux_function_app" "func" {
     "FUNCTIONS_WORKER_RUNTIME"       = "python"
     "AzureWebJobsFeatureFlags"       = "EnableWorkerIndexing"
     "cosmos_endpoint"                = azurerm_cosmosdb_account.cosmosdb.endpoint
-    /* "cosmos_endpoint"                = "https://${azurerm_cosmosdb_account.cosmosdb.name}.table.cosmos.azure.com:443/" */
   }
   connection_string {
     name  = "Default"
@@ -62,6 +61,12 @@ resource "azurerm_linux_function_app" "func" {
     value = "@Microsoft.KeyVault(VaultName=${azurerm_key_vault.kv.name};SecretName=${var.connection_string_secret_name})"
   }
   site_config {
+    cors {
+      allowed_origins = [
+        "https://stdevcrcfrontendb7a8.z16.web.core.windows.net",
+        "https://cv.az.macro-c.com"
+      ]
+    }
     ftps_state               = "FtpsOnly"
     application_insights_key = azurerm_application_insights.ai.instrumentation_key
     application_stack {

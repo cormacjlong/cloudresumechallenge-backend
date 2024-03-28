@@ -173,7 +173,7 @@ jobs:
         popd
 
     - name: Run tests on API
-      run: python -m unittest discover -s tests
+      run: python -m unittest discover -s api/tests
       
 
     - name: Login to Azure
