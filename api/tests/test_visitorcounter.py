@@ -33,6 +33,10 @@ class TestVisitorCounterFunction(unittest.TestCase):
         # Call the Azure Function directly
         response = visitorcounter(req)
 
+        # Print the type and representation of the response for debugging   <--------- Debugging
+        print(f"Response type: {type(response)}")
+        print(f"Response: {repr(response)}")
+
         # Assertions to ensure the function behaved as expected
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.get_body().decode(), '6')
