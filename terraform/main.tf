@@ -247,6 +247,6 @@ resource "azurerm_role_assignment" "mi_cosmosdb_role_assignment" {
 # Add Cosmos DB connection string to Keyvault
 resource "azurerm_key_vault_secret" "cosmosdb_connection_string" {
   name         = var.connection_string_secret_name
-  value        = azurerm_cosmosdb_account.cosmosdb.connection_strings.0.connection_string
+  value        = azurerm_cosmosdb_account.cosmosdb.primary_sql_connection_string
   key_vault_id = azurerm_key_vault.kv.id
 }
