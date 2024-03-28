@@ -11,7 +11,7 @@ def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request to increment the visitor count.')
 
     # Ensure the cosmos_endpoint environment variable is read correctly
-    cosmos_connection_string = os.getenv("Default")
+    cosmos_connection_string = os.getenv("CUSTOMCONNSTR_Default")
     if not cosmos_connection_string:
         logging.error('COSMOS_ENDPOINT environment variable is not set.')
         return func.HttpResponse(
