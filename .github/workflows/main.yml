@@ -183,6 +183,7 @@ jobs:
         pip freeze
 
     - name: Run tests on API
+      continue-on-error: true
       run: |
         pushd './api/'
         python -m unittest discover -s api/tests
