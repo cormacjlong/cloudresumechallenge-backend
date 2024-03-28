@@ -172,6 +172,12 @@ jobs:
         pip install -r requirements.txt --target=".python_packages/lib/site-packages"
         popd
 
+    - name: Print the current working directory
+      run: pwd
+  
+    - name: List all installed Python packages
+      run: pip list
+
     - name: Run Python Tests
       run: |
         python -m unittest discover tests
