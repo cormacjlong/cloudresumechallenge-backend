@@ -8,6 +8,7 @@ app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 @app.route(route="visitorcounter")
 def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
+    print("Test message from visitorcounter function.")
     return func.HttpResponse("Temporary response", status_code=200)
     logging.info('Python HTTP trigger function processed a request to increment the visitor count.')
 
