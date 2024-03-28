@@ -4,12 +4,15 @@ import azure.functions as func
 from azure.data.tables import TableServiceClient
 from azure.identity import DefaultAzureCredential
 
+# Configure logging to output to the standard output stream
+logging.basicConfig(level=logging.INFO)
+
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 @app.route(route="visitorcounter")
 def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
-    return func.HttpResponse("Temporary response", status_code=200)
     logging.info('Python HTTP trigger function processed a request to increment the visitor count.')
+    return func.HttpResponse("Temporary response", status_code=200)
 
     # Ensure the cosmos_endpoint environment variable is read correctly
     cosmos_connection_string = os.getenv("CUSTOMCONNSTR_Default")
