@@ -176,7 +176,7 @@ jobs:
     #  run: echo "PYTHONPATH=${GITHUB_WORKSPACE}/api/.python_packages/lib/site-packages" >> $GITHUB_ENV
 
     - name: Re-install dependencies
-      run: pip install -r requirements.txt
+      run: pip install -r ./api/requirements.txt
 
     - name: Run unit tests
       run: |
