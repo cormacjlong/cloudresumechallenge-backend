@@ -2,7 +2,7 @@
 import unittest
 from unittest.mock import Mock, patch
 import azure.functions as func
-from ..function_app import app  # This imports the app from the parent directory
+from function_app import app  # This imports the app from the parent directory
 
 class TestVisitorCounterFunction(unittest.TestCase):
 
