@@ -140,7 +140,7 @@ resource "azurerm_cosmosdb_table" "cosmos_table" {
   depends_on          = [azurerm_role_assignment.main_cosmosdb_role_assignment]
 }
 
-# Create a Role Assignment for the main Managed Identity to access the Storage Account (for deployments to the Function App)
+# Create a Role Assignment for the main Managed Identity to access the Storage Account
 resource "azurerm_role_assignment" "mi_blobowner_storage_role_assignment" {
   scope                = azurerm_storage_account.sa.id
   role_definition_name = "Storage Blob Data Owner"
@@ -248,14 +248,4 @@ resource "azurerm_key_vault_secret" "cosmosdb_connection_string" {
   value        = "DefaultEndpointsProtocol=https;AccountName=${azurerm_cosmosdb_account.cosmosdb.name};AccountKey=${azurerm_cosmosdb_account.cosmosdb.primary_key};TableEndpoint=https://${azurerm_cosmosdb_account.cosmosdb.name}.table.cosmos.azure.com:443/;"
   key_vault_id = azurerm_key_vault.kv.id
   depends_on   = [azurerm_role_assignment.mi_keyvault_role_assignment]
-}
-
-# Create an API Management Service
-resource "azurerm_api_management" "apim" {
-  name                = module.naming.api_management.name
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  publisher_name      = "Cormac Long"
-  publisher_email     = "cormacjlong@gmail.com"
-  sku_name            = "Consumption_0"
 }
