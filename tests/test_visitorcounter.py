@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock, patch
 import azure.functions as func
-from function_app import visitorcounter
+from api.function_app import visitorcounter
 
 class TestVisitorCounterFunction(unittest.TestCase):
 
@@ -26,7 +26,7 @@ class TestVisitorCounterFunction(unittest.TestCase):
         # Create a fake HttpRequest
         req = func.HttpRequest(
             method='GET',
-            url='/api',
+            url='/api/visitorcounter',
             body=None,
         )
 
