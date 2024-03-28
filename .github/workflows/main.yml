@@ -189,7 +189,7 @@ jobs:
 
     - name: Run Python Tests
       run: |
-        python -m unittest discover -s ./tests
+        python -m unittest discover -s ./tests -t ./api
 
     - name: Login to Azure
       id: LoginToAzure
