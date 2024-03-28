@@ -11,22 +11,22 @@ def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request to increment the visitor count.')
 
     # Ensure the cosmos_endpoint environment variable is read correctly
-    cosmos_endpoint = os.getenv("cosmos_endpoint")
-    if not cosmos_endpoint:
+    cosmos_connection_string = os.getenv("Default")
+    if not cosmos_connection_string:
         logging.error('COSMOS_ENDPOINT environment variable is not set.')
         return func.HttpResponse(
             "COSMOS_ENDPOINT environment variable is not set.",
             status_code=500
         )
 
-    logging.info(f'Using Cosmos DB endpoint: {cosmos_endpoint}')
+    logging.info(f'Using Cosmos DB endpoint: {cosmos_connection_string}')
 
     try:
         # Initialize DefaultAzureCredential which will use the managed identity
         credential = DefaultAzureCredential()
 
         # Initialize TableServiceClient using the managed identity credential
-        table_service_client = TableServiceClient(endpoint=cosmos_endpoint, credential=credential)
+        table_service_client = TableServiceClient.from_connection_string(conn_str=cosmos_connection_string)
         logging.info('TableServiceClient initialized.')
 
         # Reference to the table

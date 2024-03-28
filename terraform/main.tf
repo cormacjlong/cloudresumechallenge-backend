@@ -238,7 +238,7 @@ resource "azurerm_role_assignment" "func_cosmosdb_role_assignment" {
 }
 
 # Create a Role Assignment for the main Managed Identity to access the Keyvault
-resource "azurerm_role_assignment" "mi_cosmosdb_role_assignment" {
+resource "azurerm_role_assignment" "mi_keyvault_role_assignment" {
   scope                = azurerm_key_vault.kv.id
   role_definition_name = "Key Vault Administrator"
   principal_id         = data.azurerm_user_assigned_identity.mid.principal_id
@@ -249,4 +249,5 @@ resource "azurerm_key_vault_secret" "cosmosdb_connection_string" {
   name         = var.connection_string_secret_name
   value        = azurerm_cosmosdb_account.cosmosdb.primary_sql_connection_string
   key_vault_id = azurerm_key_vault.kv.id
+  depends_on   = [azurerm_role_assignment.mi_keyvault_role_assignment]
 }
