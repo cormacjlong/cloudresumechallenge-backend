@@ -172,13 +172,9 @@ jobs:
         pip install -r requirements.txt --target=".python_packages/lib/site-packages"
         popd
 
-    - name: Setup virtual environment and run tests
+    - name: Run Python Tests
       run: |
-        python -m venv venv
-        source venv/bin/activate
-        python -m pip install --upgrade pip
-        pip install -r api/requirements.txt
-        python -m unittest discover -s api/tests      
+        python -m unittest discover -s tests      
 
     - name: Login to Azure
       id: LoginToAzure

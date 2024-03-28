@@ -2,7 +2,7 @@
 import unittest
 from unittest.mock import Mock, patch
 import azure.functions as func
-from ..function_app import app  # This imports the app
+from .api.function_app import app  # This imports the app
 
 class TestVisitorCounterFunction(unittest.TestCase):
 
