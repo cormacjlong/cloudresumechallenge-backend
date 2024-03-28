@@ -64,12 +64,6 @@ resource "azurerm_linux_function_app" "func" {
   site_config {
     ftps_state               = "FtpsOnly"
     application_insights_key = azurerm_application_insights.ai.instrumentation_key
-    cors {
-      allowed_origins = [
-        "https://stdevcrcfrontendb7a8.z16.web.core.windows.net",
-        "https://cv.az.macro-c.com"
-      ]
-    }
     application_stack {
       python_version = "3.11"
     }
@@ -256,4 +250,14 @@ resource "azurerm_key_vault_secret" "cosmosdb_connection_string" {
   value        = "DefaultEndpointsProtocol=https;AccountName=${azurerm_cosmosdb_account.cosmosdb.name};AccountKey=${azurerm_cosmosdb_account.cosmosdb.primary_key};TableEndpoint=https://${azurerm_cosmosdb_account.cosmosdb.name}.table.cosmos.azure.com:443/;"
   key_vault_id = azurerm_key_vault.kv.id
   depends_on   = [azurerm_role_assignment.mi_keyvault_role_assignment]
+}
+
+# Create an API Management Service
+resource "azurerm_api_management" "apim" {
+  name                = module.naming.api_management.name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  publisher_name      = "Cormac Long"
+  publisher_email     = "cormacjlong@gmail.com"
+  sku_name            = "Consumption_0"
 }
