@@ -59,7 +59,7 @@ resource "azurerm_linux_function_app" "func" {
   connection_string {
     name  = "Default"
     type  = "Custom"
-    value = "VaultName=${azurerm_key_vault.kv.name};SecretName=${var.connection_string_secret_name}"
+    value = "@Microsoft.KeyVault(VaultName=${azurerm_key_vault.kv.name};SecretName=${var.connection_string_secret_name})"
   }
   site_config {
     ftps_state               = "FtpsOnly"
