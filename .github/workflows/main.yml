@@ -174,8 +174,7 @@ jobs:
 
     - name: Run Python Tests
       run: |
-        pushd './api/'
-        python -m unittest discover -s ../tests      
+        python -m unittest discover -s ./tests      
 
     - name: Login to Azure
       id: LoginToAzure
@@ -194,8 +193,3 @@ jobs:
         package: "./api"
         scm-do-build-during-deployment: true
         enable-oryx-build: true
-
-    - name: Logout from Azure
-      run: |
-            az logout
-      if: always()
