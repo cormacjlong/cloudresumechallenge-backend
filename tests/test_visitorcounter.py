@@ -3,7 +3,7 @@ import sys
 sys.path.append("$(System.DefaultWorkingDirectory)/.python_packages/lib/site-packages")
 import unittest
 from unittest.mock import Mock, patch
-import azure.functions as func
+from .api import azure.functions as func
 from .api.function_app import app  # This imports the app
 
 class TestVisitorCounterFunction(unittest.TestCase):
