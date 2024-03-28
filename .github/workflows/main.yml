@@ -181,6 +181,7 @@ jobs:
     - name: Print the current working directory
       run: |
         pwd
+        ls -l
   
     - name: List all installed Python packages
       run: |
@@ -188,7 +189,7 @@ jobs:
 
     - name: Run Python Tests
       run: |
-        python -m unittest discover tests -t .
+        python -m unittest discover -s ./tests
 
     - name: Login to Azure
       id: LoginToAzure

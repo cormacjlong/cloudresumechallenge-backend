@@ -1,7 +1,7 @@
 # test_visitorcounter.py inside the api/tests directory
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'api')))
+# import sys
+# import os
+# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'api')))
 
 import azure.functions as func
 import unittest
