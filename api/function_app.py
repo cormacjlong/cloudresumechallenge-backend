@@ -8,8 +8,8 @@ app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 @app.route(route="visitorcounter")
 def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request to increment the visitor count.')
     return func.HttpResponse("Temporary response", status_code=200)
+    logging.info('Python HTTP trigger function processed a request to increment the visitor count.')
 
     # Ensure the cosmos_endpoint environment variable is read correctly
     cosmos_connection_string = os.getenv("CUSTOMCONNSTR_Default")
