@@ -147,6 +147,8 @@ resource "azurerm_role_assignment" "mi_blobowner_storage_role_assignment" {
   principal_id         = data.azurerm_user_assigned_identity.mid.principal_id
 }
 
+/* Disabled logging for now
+
 # Create a Log Analytics Workspace for Application Insights
 resource "azurerm_log_analytics_workspace" "law" {
   location            = azurerm_resource_group.rg.location
@@ -213,6 +215,8 @@ resource "azurerm_monitor_diagnostic_setting" "cosmos_diag_setting" {
     ]
   }
 }
+
+ */
 
 # Create Keyvault
 resource "azurerm_key_vault" "kv" {

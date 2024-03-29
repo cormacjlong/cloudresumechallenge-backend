@@ -38,3 +38,7 @@ terraform.rc
 *.pem
 *.key
 *.pub
+
+# Ignore private folders
+**/privateapi/*
+**/privatetest/*
