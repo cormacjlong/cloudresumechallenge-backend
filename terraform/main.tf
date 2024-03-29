@@ -61,8 +61,8 @@ resource "azurerm_linux_function_app" "func" {
     value = "@Microsoft.KeyVault(VaultName=${azurerm_key_vault.kv.name};SecretName=${var.connection_string_secret_name})"
   }
   site_config {
-    ftps_state               = "FtpsOnly"
-    application_insights_key = azurerm_application_insights.ai.instrumentation_key
+    ftps_state = "FtpsOnly"
+    #application_insights_key = azurerm_application_insights.ai.instrumentation_key  # Disabled logging for now
     application_stack {
       python_version = "3.11"
     }
