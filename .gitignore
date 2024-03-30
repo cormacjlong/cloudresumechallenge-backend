@@ -40,5 +40,4 @@ terraform.rc
 *.pub
 
 # Ignore private folders
-**/privateapi/*
-**/privatetest/*
+**/backups/*
