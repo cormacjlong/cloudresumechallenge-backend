@@ -20,10 +20,6 @@ def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
         )
 
     try:
-        # Initialize DefaultAzureCredential which will use the managed identity
-        credential = DefaultAzureCredential()
-        print('DefaultAzureCredential initialized.')
-
         # Initialize TableServiceClient using the managed identity credential
         table_service_client = TableServiceClient.from_connection_string(conn_str=cosmos_connection_string)
         print('TableServiceClient initialized.')
@@ -47,8 +43,13 @@ def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
             'RowKey': 'Counter',
             'Count': count
             }
-            table_client.create_entity(entity=entity)
-            print('Visitor count initialized.')
+            try:
+                print('About to create entity.')
+                table_client.create_entity(entity=entity)
+                print('Visitor count initialized.')
+            except Exception as e:
+                print(f'Error during entity creation: {e}')
+
 
         # Increment the count
         count += 1

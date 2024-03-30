@@ -1,42 +1,37 @@
-# <project_root>/tests/test_my_second_function.py
 import unittest
 from unittest.mock import patch, MagicMock
-import azure.functions as func
 
-from function_app import visitorcounter
+from azure.functions import HttpRequest
+from function_app import visitorcounter  # Adjust the import based on your project structure
 
 class TestFunction(unittest.TestCase):
 
-  @patch('os.getenv')  # Mock getenv
-  @patch('azure.data.tables.TableServiceClient')
+    @patch('os.getenv')
+    @patch('azure.data.tables.TableServiceClient')
+    def test_function_app(self, mock_table_service_client, mock_getenv):
+        # Setup the fake connection string
+        mock_getenv.return_value = 'DefaultEndpointsProtocol=https;AccountName=FakeAccountName;AccountKey=FakeAccountKey;EndpointSuffix=core.windows.net'
+        
+        # Mock TableServiceClient methods
+        mock_client = mock_table_service_client.return_value
+        mock_table_client = MagicMock()
+        
+        # Mock the entity behavior
+        mock_entity = MagicMock()
+        mock_entity['Count'] = 24  # Setting Count on the mock entity
+        mock_table_client.get_entity.side_effect = [Exception("Entity not found"), mock_entity]
 
-  def test_function_app(self, mock_table_service_client, mock_getenv):
-    # Mocking os.getenv to return a fake connection string
-    mock_getenv.return_value = 'DefaultEndpointsProtocol=https;AccountName=FakeAccountName;AccountKey=FakeAccountKey;EndpointSuffix=core.windows.net'
-      
-    # Mock TableServiceClient methods if necessary
-    # For now, we will skip detailed mocking of TableServiceClient
-    mock_client = mock_table_service_client.return_value
-    mock_table_client = MagicMock()
-    mock_response = {'PartitionKey': 'VisitorCounter', 'RowKey': 'Counter', 'Count': 42}
-    mock_table_client.get_entity.return_value = mock_response
+        mock_table_client.create_entity.return_value = None
+        mock_table_client.update_entity.return_value = None
 
-    mock_table_client.create_entity.return_value = None
-    mock_table_client.update_entity.return_value = None
+        mock_client.get_table_client.return_value = mock_table_client
 
-    mock_client.get_table_client.return_value = mock_table_client
+        # Construct a mock HTTP request
+        req = HttpRequest(method='GET', url='/api/visitorcounter', body=None, params={})
+        
+        # Call the function
+        resp = visitorcounter(req)
 
-    # Construct a mock HTTP request.
-    req = func.HttpRequest(method='GET',
-                           body=None,
-                           url='/api/blahblah/hello'),
-    
-    # Call the function.
-    func_call = visitorcounter.build().get_user_function()
-    resp = func_call(req)
-
-    # Check the output.
-    if resp is not None:
-      self.assertEqual(resp.status_code, 200)
-    else:
-      self.fail("Function returned None instead of a response object")
+        # Assert the expected outcome
+        self.assertIsNotNone(resp, "Function returned None instead of a response object")
+        self.assertEqual(resp.status_code, 200)
