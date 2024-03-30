@@ -181,7 +181,7 @@ resource "azurerm_monitor_diagnostic_setting" "func_diag_setting" {
   count                      = var.logging_on == true ? 1 : 0
   name                       = "diag-${azurerm_linux_function_app.func.name}"
   target_resource_id         = azurerm_linux_function_app.func.id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.law[0].id
 
   dynamic "enabled_log" {
     for_each = data.azurerm_monitor_diagnostic_categories.func_diag_categories.log_category_types
