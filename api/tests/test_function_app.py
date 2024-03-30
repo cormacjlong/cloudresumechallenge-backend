@@ -8,7 +8,7 @@ class TestFunction(unittest.TestCase):
 
     @patch('os.getenv')
     @patch('azure.data.tables.TableServiceClient.from_connection_string')
-    def test_function_app_noentity(self, mock_from_conn_str, mock_getenv):
+    def test_function_app_withentity(self, mock_from_conn_str, mock_getenv):
         # Setup the mock connection string
         mock_getenv.return_value = 'NotAnActualSecret;'
         

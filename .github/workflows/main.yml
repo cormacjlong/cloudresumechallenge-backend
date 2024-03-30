@@ -172,14 +172,13 @@ jobs:
         pip install -r requirements.txt --target=".python_packages/lib/site-packages"
         popd
 
-    - name: Add dependencies folder to Python Path
+    - name: Add dependencies folder to Python path
       run: echo "PYTHONPATH=${GITHUB_WORKSPACE}/api/.python_packages/lib/site-packages" >> $GITHUB_ENV
 
     - name: Run unit tests
-      continue-on-error: true
       run: |
         pushd './api/'
-        python -m unittest discover -s ./tests
+        python -m unittest discover -s ./tests -v
 
     - name: Login to Azure
       id: LoginToAzure
