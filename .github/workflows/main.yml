@@ -167,7 +167,7 @@ jobs:
     - name: Package dependencies for deployment
       shell: bash
       run: |
-        pushd './api/'
+        pushd './api/' > /dev/null
         python -m pip install --upgrade pip
         pip install -r requirements.txt --target=".python_packages/lib/site-packages"
         popd
@@ -177,7 +177,7 @@ jobs:
 
     - name: Run unit tests
       run: |
-        pushd './api/'
+        pushd './api/' > /dev/null
         python -m unittest discover -s ./tests -v
 
     - name: Login to Azure
