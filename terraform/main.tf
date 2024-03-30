@@ -61,8 +61,8 @@ resource "azurerm_linux_function_app" "func" {
     value = "@Microsoft.KeyVault(VaultName=${azurerm_key_vault.kv.name};SecretName=${var.connection_string_secret_name})"
   }
   site_config {
-    ftps_state = "FtpsOnly"
-    #application_insights_key = azurerm_application_insights.ai.instrumentation_key  # Disabled logging for now
+    ftps_state               = "FtpsOnly"
+    application_insights_key = azurerm_application_insights.ai.instrumentation_key
     application_stack {
       python_version = "3.11"
     }
@@ -147,8 +147,6 @@ resource "azurerm_role_assignment" "mi_blobowner_storage_role_assignment" {
   principal_id         = data.azurerm_user_assigned_identity.mid.principal_id
 }
 
-/* Disabled logging for now
-
 # Create a Log Analytics Workspace for Application Insights
 resource "azurerm_log_analytics_workspace" "law" {
   location            = azurerm_resource_group.rg.location
@@ -191,6 +189,9 @@ resource "azurerm_monitor_diagnostic_setting" "func_diag_setting" {
     ]
   }
 }
+
+/* Disabled logging for now
+
 
 # Set Diagnostic Logging on Cosmos
 data "azurerm_monitor_diagnostic_categories" "cosmos_diag_categories" {
