@@ -152,7 +152,7 @@ resource "azurerm_role_assignment" "mi_blobowner_storage_role_assignment" {
 
 # Create a Log Analytics Workspace for Application Insights
 resource "azurerm_log_analytics_workspace" "law" {
-  count               = var.logging_on == true ? 1 : 0
+  count               = var.logging_on ? 1 : 0
   location            = azurerm_resource_group.rg.location
   name                = module.naming.log_analytics_workspace.name
   resource_group_name = azurerm_resource_group.rg.name
@@ -163,7 +163,7 @@ resource "azurerm_log_analytics_workspace" "law" {
 
 # Create Application Insights
 resource "azurerm_application_insights" "ai" {
-  count               = var.logging_on == true ? 1 : 0
+  count               = var.logging_on ? 1 : 0
   location            = azurerm_resource_group.rg.location
   name                = module.naming.application_insights.name
   resource_group_name = azurerm_resource_group.rg.name
@@ -173,12 +173,12 @@ resource "azurerm_application_insights" "ai" {
 
 # Set Diagnostic Logging on Function App
 data "azurerm_monitor_diagnostic_categories" "func_diag_categories" {
-  count       = var.logging_on == true ? 1 : 0
+  count       = var.logging_on ? 1 : 0
   resource_id = azurerm_linux_function_app.func.id
 }
 
 resource "azurerm_monitor_diagnostic_setting" "func_diag_setting" {
-  count                      = var.logging_on == true ? 1 : 0
+  count                      = var.logging_on ? 1 : 0
   name                       = "diag-${azurerm_linux_function_app.func.name}"
   target_resource_id         = azurerm_linux_function_app.func.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law[0].id
@@ -197,21 +197,20 @@ resource "azurerm_monitor_diagnostic_setting" "func_diag_setting" {
   }
 }
 
-/* Disabled logging for now
-
-
 # Set Diagnostic Logging on Cosmos
 data "azurerm_monitor_diagnostic_categories" "cosmos_diag_categories" {
+  count       = var.logging_on ? 1 : 0
   resource_id = azurerm_cosmosdb_account.cosmosdb.id
 }
 
 resource "azurerm_monitor_diagnostic_setting" "cosmos_diag_setting" {
+  count                      = var.logging_on ? 1 : 0
   name                       = "diag-${azurerm_cosmosdb_account.cosmosdb.name}"
   target_resource_id         = azurerm_cosmosdb_account.cosmosdb.id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.law[0].id
 
   dynamic "enabled_log" {
-    for_each = data.azurerm_monitor_diagnostic_categories.cosmos_diag_categories.log_category_types
+    for_each = data.azurerm_monitor_diagnostic_categories.cosmos_diag_categories[0].log_category_types
     content {
       category = enabled_log.value
     }
@@ -223,8 +222,6 @@ resource "azurerm_monitor_diagnostic_setting" "cosmos_diag_setting" {
     ]
   }
 }
-
- */
 
 # Create Keyvault
 resource "azurerm_key_vault" "kv" {

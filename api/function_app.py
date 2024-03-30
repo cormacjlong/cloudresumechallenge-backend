@@ -51,7 +51,7 @@ def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
 
 
         # Increment the count
-        count += 1
+        count += 2  # Breaking to test unit tests
         entity['Count'] = count
         logging.info(f'Incremented count: {count}')
 

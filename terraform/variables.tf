@@ -60,6 +60,6 @@ variable "connection_string_secret_name" {
 
 variable "logging_on" {
   type        = bool
-  description = "Turnin this on will create a Log Analytics work space and configure logging for resources."
-  default     = false
+  description = "Turning this on will create a Log Analytics Workspace and configure logging for resources."
+  default     = true
 }
