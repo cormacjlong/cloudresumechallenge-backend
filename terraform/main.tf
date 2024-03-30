@@ -61,8 +61,9 @@ resource "azurerm_linux_function_app" "func" {
     value = "@Microsoft.KeyVault(VaultName=${azurerm_key_vault.kv.name};SecretName=${var.connection_string_secret_name})"
   }
   site_config {
-    ftps_state               = "FtpsOnly"
-    application_insights_key = azurerm_application_insights.ai.instrumentation_key
+    ftps_state                             = "FtpsOnly"
+    application_insights_key               = var.logging_on == true ? azurerm_application_insights.ai.instrumentation_key : null
+    application_insights_connection_string = var.logging_on == true ? azurerm_application_insights.ai.connection_string : null
     application_stack {
       python_version = "3.11"
     }
@@ -151,6 +152,7 @@ resource "azurerm_role_assignment" "mi_blobowner_storage_role_assignment" {
 
 # Create a Log Analytics Workspace for Application Insights
 resource "azurerm_log_analytics_workspace" "law" {
+  count               = var.logging_on == true ? 1 : 0
   location            = azurerm_resource_group.rg.location
   name                = module.naming.log_analytics_workspace.name
   resource_group_name = azurerm_resource_group.rg.name
@@ -161,6 +163,7 @@ resource "azurerm_log_analytics_workspace" "law" {
 
 # Create Application Insights
 resource "azurerm_application_insights" "ai" {
+  count               = var.logging_on == true ? 1 : 0
   location            = azurerm_resource_group.rg.location
   name                = module.naming.application_insights.name
   resource_group_name = azurerm_resource_group.rg.name
@@ -170,10 +173,12 @@ resource "azurerm_application_insights" "ai" {
 
 # Set Diagnostic Logging on Function App
 data "azurerm_monitor_diagnostic_categories" "func_diag_categories" {
+  count       = var.logging_on == true ? 1 : 0
   resource_id = azurerm_linux_function_app.func.id
 }
 
 resource "azurerm_monitor_diagnostic_setting" "func_diag_setting" {
+  count                      = var.logging_on == true ? 1 : 0
   name                       = "diag-${azurerm_linux_function_app.func.name}"
   target_resource_id         = azurerm_linux_function_app.func.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
