@@ -62,8 +62,8 @@ resource "azurerm_linux_function_app" "func" {
   }
   site_config {
     ftps_state                             = "FtpsOnly"
-    application_insights_key               = var.logging_on == true ? azurerm_application_insights.ai.instrumentation_key : null
-    application_insights_connection_string = var.logging_on == true ? azurerm_application_insights.ai.connection_string : null
+    application_insights_key               = var.logging_on == true ? azurerm_application_insights.ai[0].instrumentation_key : null
+    application_insights_connection_string = var.logging_on == true ? azurerm_application_insights.ai[0].connection_string : null
     application_stack {
       python_version = "3.11"
     }
