@@ -168,7 +168,7 @@ resource "azurerm_application_insights" "ai" {
   name                = module.naming.application_insights.name
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "other"
-  workspace_id        = azurerm_log_analytics_workspace.law.id
+  workspace_id        = azurerm_log_analytics_workspace.law[0].id
 }
 
 # Set Diagnostic Logging on Function App
