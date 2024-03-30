@@ -35,6 +35,7 @@ def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
         try:
             # Attempt to fetch the existing count
             entity = table_client.get_entity(partition_key="VisitorCounter", row_key="Counter")
+            logging.info(f'Entity fetched: {entity}')
             count = entity['Count']
             print(f'Current count fetched: {count}')
         except Exception as e:
