@@ -13,12 +13,12 @@ class TestFunction(unittest.TestCase):
         mock_getenv.return_value = 'NotAnActualSecret;'
         
         # Setup the TableServiceClient mock
-        existing_count = 42
+        existing_count = 0                                                          # <---- Simulating entity not found
         mock_table_client = MagicMock()
         mock_from_conn_str.return_value.get_table_client.return_value = mock_table_client
 
         # Setup mock behaviors for the table client
-        mock_entity = {'PartitionKey': 'VisitorCounter', 'RowKey': 'Counter', 'Count': existing_count}
+        mock_entity = None                                                          # <---- Simulating entity not found
         mock_table_client.get_entity.return_value = mock_entity
         mock_table_client.create_entity.return_value = None
         mock_table_client.update_entity.return_value = None

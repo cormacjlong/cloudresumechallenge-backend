@@ -2,7 +2,6 @@ import logging
 import os
 import azure.functions as func
 from azure.data.tables import TableServiceClient
-from azure.identity import DefaultAzureCredential
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
@@ -22,21 +21,21 @@ def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
     try:
         # Initialize TableServiceClient using the managed identity credential
         table_service_client = TableServiceClient.from_connection_string(conn_str=cosmos_connection_string)
-        print('TableServiceClient initialized.')
+        logging.info('TableServiceClient initialized.')
 
         # Reference to the table
         table_client = table_service_client.get_table_client(table_name="VisitorCountTable")
-        print('Reference to the table obtained.')
+        logging.info('Reference to the table obtained.')
 
         try:
             # Attempt to fetch the existing count
             entity = table_client.get_entity(partition_key="VisitorCounter", row_key="Counter")
             logging.info(f'Entity fetched: {entity}')
             count = entity['Count']
-            print(f'Current count fetched: {count}')
+            logging.info(f'Current count fetched: {count}')
         except Exception as e:
             # If not found, initialize the count
-            print('Entity not found. Initializing the visitor count.')
+            logging.info('Entity not found. Initializing the visitor count.')
             count = 0
             entity = {
             'PartitionKey': 'VisitorCounter',
@@ -44,29 +43,29 @@ def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
             'Count': count
             }
             try:
-                print('About to create entity.')
+                logging.info('About to initialise visitor count.')
                 table_client.create_entity(entity=entity)
-                print('Visitor count initialized.')
+                logging.info('Visitor count initialised.')
             except Exception as e:
-                print(f'Error during entity creation: {e}')
+                logging.error(f'Error during entity creation: {e}')
 
 
         # Increment the count
         count += 1
         entity['Count'] = count
-        print(f'Incremented count: {count}')
+        logging.info(f'Incremented count: {count}')
 
         # Update the entity in the table
         table_client.update_entity(entity)
-        print('Entity updated in the table.')
+        logging.info('Entity updated in the table.')
 
     except Exception as e:
-        print(f'An error occurred: {str(e)}')
+        logging.error(f'An error occurred: {str(e)}')
         return func.HttpResponse(
             f"An error occurred: {str(e)}",
             status_code=500
         )
 
     # Return the new count as a response
-    print(f'Returning the new visitor count: {count}')
+    logging.info(f'Returning the new visitor count: {count}')
     return func.HttpResponse(f"{count}", status_code=200)
