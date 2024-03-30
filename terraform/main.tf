@@ -184,7 +184,7 @@ resource "azurerm_monitor_diagnostic_setting" "func_diag_setting" {
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law[0].id
 
   dynamic "enabled_log" {
-    for_each = data.azurerm_monitor_diagnostic_categories.func_diag_categories.log_category_types
+    for_each = data.azurerm_monitor_diagnostic_categories.func_diag_categories[0].log_category_types
     content {
       category = enabled_log.value
     }
