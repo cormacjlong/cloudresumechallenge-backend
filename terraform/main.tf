@@ -208,28 +208,28 @@ resource "azurerm_key_vault_secret" "cosmosdb_connection_string" {
 }
 
 # Enable logging for resources
-module "logging" {
+module "logging_funcapp" {
   source      = "./modules"
   logging_on  = var.logging_on
   resource_id = azurerm_linux_function_app.func.id
   law_id      = azurerm_log_analytics_workspace.law[0].id
 }
 
-module "logging" {
+module "logging_cosmos" {
   source      = "./modules"
   logging_on  = var.logging_on
   resource_id = azurerm_cosmosdb_account.cosmosdb.id
   law_id      = azurerm_log_analytics_workspace.law[0].id
 }
 
-module "logging" {
+module "logging_sa" {
   source      = "./modules"
   logging_on  = var.logging_on
   resource_id = azurerm_storage_account.sa.id
   law_id      = azurerm_log_analytics_workspace.law[0].id
 }
 
-module "logging" {
+module "logging_kv" {
   source      = "./modules"
   logging_on  = var.logging_on
   resource_id = azurerm_key_vault.kv.id
