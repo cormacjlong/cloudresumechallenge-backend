@@ -170,9 +170,10 @@ resource "azurerm_application_insights" "ai" {
   application_type    = "other"
   workspace_id        = azurerm_log_analytics_workspace.law[0].id
 }
-resource "azure_monitor_action_group" "ag" {
+resource "azurerm_monitor_action_group" "ag" {
   name                = "Application Insights Smart Detection"
   resource_group_name = azurerm_resource_group.rg.name
+  short_name          = "aisd"
 }
 resource "azurerm_monitor_smart_detector_alert_rule" "failure_anomalies" {
   name                = "Failure Anomalies - ${azurerm_application_insights.application_insights.name}"
