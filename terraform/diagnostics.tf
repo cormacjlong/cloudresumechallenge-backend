@@ -1,5 +1,5 @@
 module "config_diagnostics" {
-  count                      = vae.logging_on ? 1 : 0
+  count                      = var.logging_on ? 1 : 0
   source                     = "./modules/diagnostics"
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law[0].id
   targets_resource_id = [azurerm_log_analytics_workspace.law[0].id,
