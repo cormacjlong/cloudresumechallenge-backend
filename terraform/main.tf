@@ -176,7 +176,7 @@ resource "azurerm_monitor_action_group" "ag" {
   short_name          = "aisd"
 }
 resource "azurerm_monitor_smart_detector_alert_rule" "failure_anomalies" {
-  name                = "Failure Anomalies - ${azurerm_application_insights.application_insights.name}"
+  name                = "Failure Anomalies - ${azurerm_application_insights.ai.name}"
   resource_group_name = azurerm_resource_group.rg.name
   detector_type       = "FailureAnomaliesDetector"
   scope_resource_ids  = [azurerm_application_insights.ai[0].id]
