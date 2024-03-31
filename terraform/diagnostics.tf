@@ -3,7 +3,7 @@ module "config_diagnostics" {
   source                     = "./modules/diagnostics"
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law[0].id
   targets_resource_id = [azurerm_log_analytics_workspace.law[0].id,
-    azurerm_service_plan.sp.id,
+    azurerm_service_plan.asp.id,
     azurerm_linux_function_app.func.id,
     azurerm_storage_account.sa.id,
     join("", [azurerm_storage_account.sa.id, "/blobServices/default"]),
