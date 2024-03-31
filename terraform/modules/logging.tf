@@ -18,14 +18,14 @@ variable "law_id" {
 # Get the logging categories for the resource
 data "azurerm_monitor_diagnostic_categories" "diag_categories" {
   count       = var.logging_on ? 1 : 0
-  resource_id = resource_id
+  resource_id = var.resource_id
 }
 
 resource "azurerm_monitor_diagnostic_setting" "diag_settings" {
   count                      = var.logging_on ? 1 : 0
   name                       = "diag-applied-by-terraform"
-  target_resource_id         = resource_id
-  log_analytics_workspace_id = law_id
+  target_resource_id         = var.resource_id
+  log_analytics_workspace_id = var.law_id
 
   dynamic "enabled_log" {
     for_each = data.azurerm_monitor_diagnostic_categories.diag_categories[0].log_category_types
