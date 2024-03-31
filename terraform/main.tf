@@ -170,7 +170,7 @@ resource "azurerm_application_insights" "ai" {
   application_type    = "other"
   workspace_id        = azurerm_log_analytics_workspace.law[0].id
 }
-/* resource "azure_monitor_action_group" "ag" {
+resource "azure_monitor_action_group" "ag" {
   name                = "Application Insights Smart Detection"
   resource_group_name = azurerm_resource_group.rg.name
 }
@@ -184,7 +184,7 @@ resource "azurerm_monitor_smart_detector_alert_rule" "failure_anomalies" {
   action_group {
     ids = [azurerm_monitor_action_group.ag.id]
   }
-} */
+}
 
 # Create Keyvault
 resource "azurerm_key_vault" "kv" {
