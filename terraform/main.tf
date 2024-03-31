@@ -170,6 +170,9 @@ resource "azurerm_application_insights" "ai" {
   application_type    = "other"
   workspace_id        = azurerm_log_analytics_workspace.law[0].id
 }
+# resource "azure_monitor_action_group" "ag" {
+#   name                = module.naming.action_group.name
+# }
 
 # Create Keyvault
 resource "azurerm_key_vault" "kv" {
