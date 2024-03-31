@@ -171,58 +171,6 @@ resource "azurerm_application_insights" "ai" {
   workspace_id        = azurerm_log_analytics_workspace.law[0].id
 }
 
-# Set Diagnostic Logging on Function App
-data "azurerm_monitor_diagnostic_categories" "func_diag_categories" {
-  count       = var.logging_on ? 1 : 0
-  resource_id = azurerm_linux_function_app.func.id
-}
-
-resource "azurerm_monitor_diagnostic_setting" "func_diag_setting" {
-  count                      = var.logging_on ? 1 : 0
-  name                       = "diag-${azurerm_linux_function_app.func.name}"
-  target_resource_id         = azurerm_linux_function_app.func.id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.law[0].id
-
-  dynamic "enabled_log" {
-    for_each = data.azurerm_monitor_diagnostic_categories.func_diag_categories[0].log_category_types
-    content {
-      category = enabled_log.value
-    }
-  }
-  # Ignoring changes to the metric category
-  lifecycle {
-    ignore_changes = [
-      metric
-    ]
-  }
-}
-
-# Set Diagnostic Logging on Cosmos
-data "azurerm_monitor_diagnostic_categories" "cosmos_diag_categories" {
-  count       = var.logging_on ? 1 : 0
-  resource_id = azurerm_cosmosdb_account.cosmosdb.id
-}
-
-resource "azurerm_monitor_diagnostic_setting" "cosmos_diag_setting" {
-  count                      = var.logging_on ? 1 : 0
-  name                       = "diag-${azurerm_cosmosdb_account.cosmosdb.name}"
-  target_resource_id         = azurerm_cosmosdb_account.cosmosdb.id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.law[0].id
-
-  dynamic "enabled_log" {
-    for_each = data.azurerm_monitor_diagnostic_categories.cosmos_diag_categories[0].log_category_types
-    content {
-      category = enabled_log.value
-    }
-  }
-  # Ignoring changes to the metric category
-  lifecycle {
-    ignore_changes = [
-      metric
-    ]
-  }
-}
-
 # Create Keyvault
 resource "azurerm_key_vault" "kv" {
   location                        = azurerm_resource_group.rg.location
@@ -257,4 +205,34 @@ resource "azurerm_key_vault_secret" "cosmosdb_connection_string" {
   value        = "DefaultEndpointsProtocol=https;AccountName=${azurerm_cosmosdb_account.cosmosdb.name};AccountKey=${azurerm_cosmosdb_account.cosmosdb.primary_key};TableEndpoint=https://${azurerm_cosmosdb_account.cosmosdb.name}.table.cosmos.azure.com:443/;"
   key_vault_id = azurerm_key_vault.kv.id
   depends_on   = [azurerm_role_assignment.mi_keyvault_role_assignment]
+}
+
+# Enable logging for resources
+module "logging" {
+  source      = "./modules/logging"
+  logging_on  = var.logging_on
+  resource_id = azurerm_linux_function_app.func.id
+  law_id      = azurerm_log_analytics_workspace.law[0].id
+}
+
+module "logging" {
+  source      = "./modules/logging"
+  logging_on  = var.logging_on
+  resource_id = azurerm_cosmosdb_account.cosmosdb.id
+  law_id      = azurerm_log_analytics_workspace.law[0].id
+}
+
+module "logging" {
+  source      = "./modules/logging"
+  logging_on  = var.logging_on
+  resource_id = azurerm_storage_account.sa.id
+  law_id      = azurerm_log_analytics_workspace.law[0].id
+}
+
+module "logging" {
+  source      = "./modules/logging"
+  logging_on  = var.logging_on
+  resource_id = azurerm_key_vault.kv.id
+  law_id      = azurerm_log_analytics_workspace.law[0].id
+
 }
