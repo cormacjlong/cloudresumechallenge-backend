@@ -235,11 +235,11 @@ resource "azurerm_dns_cname_record" "funcapp_dns_record" {
   zone_name           = data.azurerm_dns_zone.dns_zone.name
   resource_group_name = data.azurerm_dns_zone.dns_zone.resource_group_name
   ttl                 = 300
-  target_resource_id  = azurerm_linux_function_app.func.default_hostname
+  target_resource_id  = azurerm_linux_function_app.func.id
 }
 
 resource "azurerm_app_service_custom_hostname_binding" "funcapp_custom_hostname" {
-  hostname            = azurerm_dns_cname_record.funcapp_dns_record.fqdn
+  hostname            = trimsuffix(azurerm_dns_cname_record.funcapp_dns_record.fqdn, ".")
   app_service_name    = azurerm_linux_function_app.func.name
   resource_group_name = azurerm_resource_group.rg.name
 }
