@@ -229,13 +229,26 @@ data "azurerm_dns_zone" "dns_zone" {
   resource_group_name = var.azure_dns_zone_resource_group_name
 }
 
-# Create a DNS record for the Function App
+# Create the Domain Verification Record
+resource "azurerm_dns_txt_record" "funcapp-domain-verify" {
+  name                = "asuid.${var.custom_url_prefix}.${data.azurerm_dns_zone.dns_zone.name}"
+  zone_name           = data.azurerm_dns_zone.dns_zone.name
+  resource_group_name = data.azurerm_dns_zone.dns_zone.resource_group_name
+  ttl                 = 300
+
+  record {
+    value = azurerm_linux_function_app.func.custom_domain_verification_id
+  }
+}
+
+# Create a CNAME record for the Function App
 resource "azurerm_dns_cname_record" "funcapp_dns_record" {
   name                = "${var.custom_url_prefix}-api"
   zone_name           = data.azurerm_dns_zone.dns_zone.name
   resource_group_name = data.azurerm_dns_zone.dns_zone.resource_group_name
   ttl                 = 300
   target_resource_id  = azurerm_linux_function_app.func.id
+  depends_on          = [azurerm_dns_txt_record.funcapp-domain-verify]
 }
 
 resource "azurerm_app_service_custom_hostname_binding" "funcapp_custom_hostname" {
