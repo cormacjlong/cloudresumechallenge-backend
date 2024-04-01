@@ -222,3 +222,24 @@ resource "azurerm_key_vault_secret" "cosmosdb_connection_string" {
   key_vault_id = azurerm_key_vault.kv.id
   depends_on   = [azurerm_role_assignment.mi_keyvault_role_assignment]
 }
+
+# Get the Azure DNS Zone
+data "azurerm_dns_zone" "dns_zone" {
+  name                = var.azure_dns_zone_name
+  resource_group_name = var.azure_dns_zone_resource_group_name
+}
+
+# Create a DNS record for the Function App
+resource "azurerm_dns_cname_record" "funcapp_dns_record" {
+  name                = "${var.custom_url_prefix}-api"
+  zone_name           = data.azurerm_dns_zone.dns_zone.name
+  resource_group_name = data.azurerm_dns_zone.dns_zone.resource_group_name
+  ttl                 = 300
+  target_resource_id  = azurerm_linux_function_app.func.default_hostname
+}
+
+resource "azurerm_app_service_custom_hostname_binding" "funcapp_custom_hostname" {
+  hostname            = azurerm_dns_cname_record.funcapp_dns_record.fqdn
+  app_service_name    = azurerm_linux_function_app.func.name
+  resource_group_name = azurerm_resource_group.rg.name
+}
