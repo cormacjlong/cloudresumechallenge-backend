@@ -231,7 +231,7 @@ data "azurerm_dns_zone" "dns_zone" {
 
 # Create the Domain Verification Record
 resource "azurerm_dns_txt_record" "funcapp-domain-verify" {
-  name                = "asuid.${var.custom_url_prefix}"
+  name                = "asuid.${var.custom_url_prefix}-api"
   zone_name           = data.azurerm_dns_zone.dns_zone.name
   resource_group_name = data.azurerm_dns_zone.dns_zone.resource_group_name
   ttl                 = 300
