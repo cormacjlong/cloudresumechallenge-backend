@@ -185,7 +185,7 @@ resource "azurerm_monitor_smart_detector_alert_rule" "failure_anomalies" {
   severity            = "Sev0"
   frequency           = "PT1M"
   action_group {
-    ids = [azurerm_monitor_action_group.ag.id]
+    ids = [azurerm_monitor_action_group.ag[0].id]
   }
 }
 
