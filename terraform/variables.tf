@@ -5,15 +5,15 @@ variable "resource_location" {
 }
 
 variable "project_prefix" {
-  type        = string
-  description = "This is a short prefix that relates to the project and will be added to all resource names."
-  default     = "crcback"
+  type        = list(string)
+  description = "These are short prefix that relates to the project and will be added to all resource names."
+  default     = ["crc", "front"]
 }
 
 variable "env" {
-  type        = string
+  type        = list(string)
   description = "The environment currently being deployed."
-  default     = "dev"
+  default     = ["dev"]
 }
 
 variable "custom_url_prefix" {

@@ -5,7 +5,7 @@ data "azurerm_subscription" "current" {}
 # Naming module to ensure all resources have naming standard applied
 module "naming" {
   source      = "Azure/naming/azurerm"
-  suffix      = [var.env, var.project_prefix]
+  suffix      = concat(var.env, var.project_prefix)
   unique-seed = data.azurerm_subscription.current.subscription_id
 }
 
