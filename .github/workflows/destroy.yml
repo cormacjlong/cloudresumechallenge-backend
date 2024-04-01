@@ -3,6 +3,10 @@ name: 'Destroy Backend'
 on:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 #Special permissions required for OIDC authentication
 permissions:
   id-token: write

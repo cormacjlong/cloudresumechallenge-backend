@@ -7,7 +7,7 @@ variable "resource_location" {
 variable "project_prefix" {
   type        = list(string)
   description = "These are short prefix that relates to the project and will be added to all resource names."
-  default     = ["crc", "front"]
+  default     = ["crc", "back"]
 }
 
 variable "env" {
