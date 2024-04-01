@@ -231,7 +231,7 @@ data "azurerm_dns_zone" "dns_zone" {
 
 # Create the Domain Verification Record
 resource "azurerm_dns_txt_record" "funcapp-domain-verify" {
-  name                = "asuid.${var.custom_url_prefix}.${data.azurerm_dns_zone.dns_zone.name}"
+  name                = "asuid.${var.custom_url_prefix}"
   zone_name           = data.azurerm_dns_zone.dns_zone.name
   resource_group_name = data.azurerm_dns_zone.dns_zone.resource_group_name
   ttl                 = 300
@@ -255,4 +255,15 @@ resource "azurerm_app_service_custom_hostname_binding" "funcapp_custom_hostname"
   hostname            = substr(azurerm_dns_cname_record.funcapp_dns_record.fqdn, 0, length(azurerm_dns_cname_record.funcapp_dns_record.fqdn) - 1)
   app_service_name    = azurerm_linux_function_app.func.name
   resource_group_name = azurerm_resource_group.rg.name
+}
+
+# Create Azure Managed SSL Cert for Custom Domain
+resource "azurerm_app_service_managed_certificate" "funcapp_managed_cert" {
+  custom_hostname_binding_id = azurerm_app_service_custom_hostname_binding.funcapp_custom_hostname.id
+}
+
+resource "azurerm_app_service_certificate_binding" "funcapp_cert_binding" {
+  hostname_binding_id = azurerm_app_service_custom_hostname_binding.funcapp_custom_hostname.id
+  certificate_id      = azurerm_app_service_managed_certificate.funcapp_managed_cert.id
+  ssl_state           = "SniEnabled"
 }
