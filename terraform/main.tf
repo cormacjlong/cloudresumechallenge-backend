@@ -247,7 +247,7 @@ resource "azurerm_dns_cname_record" "funcapp_dns_record" {
   zone_name           = data.azurerm_dns_zone.dns_zone.name
   resource_group_name = data.azurerm_dns_zone.dns_zone.resource_group_name
   ttl                 = 300
-  target_resource_id  = azurerm_linux_function_app.func.id
+  record              = azurerm_linux_function_app.func.default_hostname
   depends_on          = [azurerm_dns_txt_record.funcapp-domain-verify]
 }
 
