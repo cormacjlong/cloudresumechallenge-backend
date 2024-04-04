@@ -16,7 +16,7 @@ terraform {
     resource_group_name  = "rg-platform-management"
     storage_account_name = "stterraformgj5f"
     container_name       = "terraform-state"
-    key                  = "crc-backendend.tfstate"
+    key                  = "crc-backend.tfstate"
     use_oidc             = true
   }
 }
