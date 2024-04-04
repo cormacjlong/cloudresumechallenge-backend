@@ -31,19 +31,19 @@ variable "azure_dns_zone_name" {
 variable "azure_dns_zone_resource_group_name" {
   type        = string
   description = "The name of the resource group the the Azure DNS zone is in."
-  default     = "rg-dns"
+  default     = "rg-connectivity"
 }
 
 variable "managed_identity_name" {
   type        = string
   description = "The name of the managed identity to retrieve."
-  default     = "id-github"
+  default     = "id-github-crc"
 }
 
 variable "managed_identity_resource_group" {
   type        = string
   description = "The resource group of the managed identity to retrieve."
-  default     = "rg-mid"
+  default     = "rg-identity"
 }
 
 variable "cosmos_table_name" {

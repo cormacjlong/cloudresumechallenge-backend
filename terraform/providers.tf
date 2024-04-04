@@ -13,10 +13,9 @@ terraform {
     }
   }
   backend "azurerm" {
-    resource_group_name  = "rg-terraform"
-    storage_account_name = "stcjlterraform"
-    container_name       = "tfstate"
-    key                  = "crc-backend.tfstate"
+    resource_group_name  = "rg-platform-management"
+    storage_account_name = "stterraformgj5f"
+    container_name       = "terraform-state"
     use_oidc             = true
   }
 }
