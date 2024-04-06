@@ -270,8 +270,8 @@ resource "azurerm_app_service_certificate_binding" "funcapp_cert_binding" {
   ssl_state           = "SniEnabled"
 }
 
-# Create API Management on Consumption Plan
-resource "azurerm_api_management" "api_management" {
+# Create API Management Service on Consumption Plan
+resource "azurerm_api_management" "apim" {
   name                = module.naming.api_management.name_unique
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
