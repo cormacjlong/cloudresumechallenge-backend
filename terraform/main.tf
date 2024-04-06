@@ -269,3 +269,18 @@ resource "azurerm_app_service_certificate_binding" "funcapp_cert_binding" {
   certificate_id      = azurerm_app_service_managed_certificate.funcapp_managed_cert.id
   ssl_state           = "SniEnabled"
 }
+
+# Create API Management on Consumption Plan
+resource "azurerm_api_management" "api_management" {
+  name                = module.naming.api_management.name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  publisher_name      = "Macro-C"
+  publisher_email     = "cormac@macro-c.com"
+
+  sku_name = "Consumption_0"
+
+  identity {
+    type = "SystemAssigned"
+  }
+}
