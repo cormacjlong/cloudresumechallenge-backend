@@ -313,6 +313,7 @@ resource "azurerm_api_management_api_operation_policy" "this" {
       <inbound>
           <base />
           <set-backend-service id="set-backend-service" backend-id="${azurerm_api_management_backend.this.name}" />
+          <rate-limit calls="50" renewal-period="300" />
       </inbound>
       <backend>
           <base />
