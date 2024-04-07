@@ -327,7 +327,7 @@ resource "azurerm_api_management_backend" "this" {
   api_management_name = azurerm_api_management.apim.name
   protocol            = "http"
   url                 = "https://${azurerm_linux_function_app.func.name}.azurewebsites.net/api"
-  resource_id         = azurerm_linux_function_app.func.id
+  resource_id         = "https://management.azure.com${azurerm_linux_function_app.func.id}"
   credentials {
     header = {
       "x-functions-key" = "{{${azurerm_api_management_named_value.this.name}}}"
