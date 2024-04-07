@@ -293,7 +293,7 @@ resource "azurerm_api_management_api" "func_app" {
   revision            = "1"
   display_name        = "Visitor Counter"
   protocols           = ["https"]
-  path                = "/api/visitorcounter"
+  path                = "visitorcounter"
 
   import {
     content_format = "swagger-link-json"
