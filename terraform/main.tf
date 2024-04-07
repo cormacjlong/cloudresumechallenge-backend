@@ -322,7 +322,7 @@ resource "azurerm_api_management_named_value" "this" {
 
 # Create a Backend for the Function App in APIM
 resource "azurerm_api_management_backend" "this" {
-  name                = azurerm_linux_function_app.func.name
+  name                = "${azurerm_linux_function_app.func.name}-backend"
   resource_group_name = azurerm_api_management.apim.resource_group_name
   api_management_name = azurerm_api_management.apim.name
   protocol            = "http"
@@ -330,7 +330,7 @@ resource "azurerm_api_management_backend" "this" {
   resource_id         = azurerm_linux_function_app.func.id
   credentials {
     header = {
-      "x-functions-key" = "blank" #"{{${azurerm_api_management_named_value.this.name}}}"
+      "x-functions-key" = "{{${azurerm_api_management_named_value.this.name}}}"
     }
   }
 }
