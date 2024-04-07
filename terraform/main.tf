@@ -256,7 +256,7 @@ resource "azurerm_dns_cname_record" "funcapp-domain-verify" {
 
 # Bind custom domain to function app
 resource "azurerm_app_service_custom_hostname_binding" "funcapp_custom_hostname" {
-  hostname            = substr(azurerm_dns_cname_record.funcapp_dns_record.fqdn, 0, length(azurerm_dns_cname_record.funcapp_dns_record.fqdn) - 1)
+  hostname            = substr(azurerm_dns_cname_record.funcapp-domain-verify.fqdn, 0, length(azurerm_dns_cname_record.funcapp-domain-verify.fqdn) - 1)
   app_service_name    = azurerm_linux_function_app.func.name
   resource_group_name = azurerm_resource_group.rg.name
 }
