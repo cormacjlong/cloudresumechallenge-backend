@@ -297,6 +297,6 @@ resource "azurerm_api_management_api" "func_app" {
 
   import {
     content_format = "swagger-link-json"
-    content_value  = azurerm_linux_function_app.func.default_hostname
+    content_value  = "https://${azurerm_linux_function_app.func.default_hostname}/?format=json"
   }
 }
