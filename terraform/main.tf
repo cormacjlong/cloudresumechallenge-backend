@@ -305,7 +305,7 @@ resource "azurerm_api_management" "apim" {
 # Get Function App Keys
 data "azurerm_function_app_host_keys" "this" {
   name                = azurerm_linux_function_app.func.name
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_linux_function_app.func.resource_group_name
 }
 
 resource "azurerm_api_management_backend" "this" {
@@ -313,7 +313,7 @@ resource "azurerm_api_management_backend" "this" {
   resource_group_name = azurerm_api_management.apim.resource_group_name
   api_management_name = azurerm_api_management.apim.name
   protocol            = "http"
-  url                 = "https://${azurerm_linux_function_app.name}.azurewebsites.net/api/"
+  url                 = "https://${azurerm_linux_function_app.func.name}.azurewebsites.net/api/"
   credentials {
     header = {
       "x-functions-key" = "${data.azurerm_function_app_host_keys.this.default_function_key}"
