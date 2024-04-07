@@ -218,9 +218,14 @@ resource "azurerm_role_assignment" "mi_keyvault_role_assignment" {
 }
 
 # Create a Role Assignment for the APIM Managed Identity to access the Keyvault
-resource "azurerm_role_assignment" "apim_keyvault_role_assignment" {
+resource "azurerm_role_assignment" "apim_keyvault_secrets" {
   scope                = azurerm_key_vault.kv.id
-  role_definition_name = "Key Vault Certificates Officer"
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = azurerm_api_management.apim.identity[0].principal_id
+}
+resource "azurerm_role_assignment" "apim_keyvault_certificates" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Certificate User"
   principal_id         = azurerm_api_management.apim.identity[0].principal_id
 }
 
