@@ -255,7 +255,7 @@ resource "azurerm_key_vault_certificate" "apim_client_cert" {
       }
 
       trigger {
-        days_before_expiry = 30
+        days_before_expiry = 3
       }
     }
 
