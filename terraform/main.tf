@@ -2,6 +2,10 @@ data "azurerm_client_config" "current" {}
 
 data "azurerm_subscription" "current" {}
 
+locals {
+  custom_url_prefix_full = var.env == "prod" ? var.custom_url_prefix : "${var.custom_url_prefix}-${var.env[0]}"
+}
+
 # Naming module to ensure all resources have naming standard applied
 module "naming" {
   source      = "Azure/naming/azurerm"
