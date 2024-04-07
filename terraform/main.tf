@@ -315,9 +315,9 @@ resource "azurerm_api_management_named_value" "this" {
   display_name        = "${azurerm_linux_function_app.func.name}-key"
   resource_group_name = azurerm_api_management.apim.resource_group_name
   api_management_name = azurerm_api_management.apim.name
-  tags                = ["key", "function", "auto"]
-  secret              = true
-  value               = data.azurerm_function_app_host_keys.this.default_function_key
+  #tags                = ["key", "function", "auto"]
+  secret = true
+  value  = data.azurerm_function_app_host_keys.this.default_function_key
 }
 
 # resource "azurerm_api_management_backend" "this" {
