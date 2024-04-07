@@ -311,7 +311,7 @@ data "azurerm_function_app_host_keys" "this" {
 
 # Create a Named Value for the Function App Key in APIM
 resource "azurerm_api_management_named_value" "this" {
-  name                = concat(azurerm_api_management.apim.name, "/", azurerm_linux_function_app.func.name, "-key")
+  name                = "${azurerm_api_management.apim.name}/${azurerm_linux_function_app.func.name}-key"
   display_name        = "${azurerm_linux_function_app.func.name}-key"
   resource_group_name = azurerm_api_management.apim.resource_group_name
   api_management_name = azurerm_api_management.apim.name
