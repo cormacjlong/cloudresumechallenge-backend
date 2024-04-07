@@ -232,46 +232,6 @@ data "azurerm_dns_zone" "dns_zone" {
   resource_group_name = var.azure_dns_zone_resource_group_name
 }
 
-# Create the Domain Verification Record
-resource "azurerm_dns_txt_record" "funcapp-domain-verify" {
-  name                = "asuid.${var.custom_url_prefix}-api"
-  zone_name           = data.azurerm_dns_zone.dns_zone.name
-  resource_group_name = data.azurerm_dns_zone.dns_zone.resource_group_name
-  ttl                 = 300
-
-  record {
-    value = azurerm_linux_function_app.func.custom_domain_verification_id
-  }
-}
-
-# Create a CNAME record for the Function App
-resource "azurerm_dns_cname_record" "funcapp-domain-verify" {
-  name                = "${var.custom_url_prefix}-api"
-  zone_name           = data.azurerm_dns_zone.dns_zone.name
-  resource_group_name = data.azurerm_dns_zone.dns_zone.resource_group_name
-  ttl                 = 300
-  record              = azurerm_linux_function_app.func.default_hostname
-  depends_on          = [azurerm_dns_txt_record.funcapp-domain-verify]
-}
-
-# Bind custom domain to function app
-resource "azurerm_app_service_custom_hostname_binding" "funcapp_custom_hostname" {
-  hostname            = substr(azurerm_dns_cname_record.funcapp-domain-verify.fqdn, 0, length(azurerm_dns_cname_record.funcapp-domain-verify.fqdn) - 1)
-  app_service_name    = azurerm_linux_function_app.func.name
-  resource_group_name = azurerm_resource_group.rg.name
-}
-
-# Create Azure Managed SSL Cert for Custom Domain
-resource "azurerm_app_service_managed_certificate" "funcapp_managed_cert" {
-  custom_hostname_binding_id = azurerm_app_service_custom_hostname_binding.funcapp_custom_hostname.id
-}
-
-resource "azurerm_app_service_certificate_binding" "funcapp_cert_binding" {
-  hostname_binding_id = azurerm_app_service_custom_hostname_binding.funcapp_custom_hostname.id
-  certificate_id      = azurerm_app_service_managed_certificate.funcapp_managed_cert.id
-  ssl_state           = "SniEnabled"
-}
-
 # Create API Management Service on Consumption Plan
 resource "azurerm_api_management" "apim" {
   name                = module.naming.api_management.name_unique
@@ -365,13 +325,4 @@ resource "azurerm_api_management_api_operation_policy" "this" {
       </on-error>
     </policies>
   XML
-}
-
-# Create a CNAME record for the API Management Service
-resource "azurerm_dns_cname_record" "apim" {
-  name                = "${var.custom_url_prefix}-apim"
-  zone_name           = data.azurerm_dns_zone.dns_zone.name
-  resource_group_name = data.azurerm_dns_zone.dns_zone.resource_group_name
-  ttl                 = 3600
-  record              = trim(azurerm_api_management.apim.gateway_url, "https://")
 }
