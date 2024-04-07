@@ -342,24 +342,45 @@ resource "azurerm_api_management_api" "this" {
   resource_group_name   = azurerm_api_management.apim.resource_group_name
   api_management_name   = azurerm_api_management.apim.name
   revision              = "1"
-  subscription_required = true
-  path                  = azurerm_linux_function_app.func.name
+  subscription_required = false
+  path                  = "vc"
   protocols             = ["https"]
-  subscription_key_parameter_names {
-    header = "Ocp-Apim-Subscription-Key"
-    query  = "subscription-key"
-  }
 }
 
 # Create an API Operation in APIM
 resource "azurerm_api_management_api_operation" "this" {
-  display_name        = "visitorcounter"
+  display_name        = "Get Count"
   api_management_name = azurerm_api_management.apim.name
-  api_name            = "visitorcounter"
-  url_template        = "/visitorcounter"
+  api_name            = "get-count"
+  url_template        = "/get-count"
   resource_group_name = azurerm_api_management.apim.resource_group_name
-  method              = "POST"
+  method              = "Get"
   operation_id        = "get-count"
+}
+
+# Create an API Operation Policy in APIM
+resource "azurerm_api_management_api_operation_policy" "this" {
+  api_management_name = azurerm_api_management.apim.name
+  api_name            = azurerm_api_management_api.this.name
+  operation_id        = azurerm_api_management_api_operation.this.operation_id
+  resource_group_name = azurerm_api_management.apim.resource_group_name
+  xml_content         = <<XML
+    <policies>
+      <inbound>
+          <base />
+          <set-backend-service id="set-backend-service" backend-id="func-dev-crc-back-b7a8-backend" />
+      </inbound>
+      <backend>
+          <base />
+      </backend>
+      <outbound>
+          <base />
+      </outbound>
+      <on-error>
+          <base />
+      </on-error>
+    </policies>
+  XML
 }
 
 # resource "azurerm_api_management_backend" "this" {
