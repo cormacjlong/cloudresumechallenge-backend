@@ -70,7 +70,7 @@ resource "azurerm_linux_function_app" "func" {
     cors {
       allowed_origins = ["https://${var.custom_url_prefix}.${var.azure_dns_zone_name}"]
     }
-    api_management_api_id = azurerm_api_management.apim.id
+    //api_management_api_id = azurerm_api_management.apim.id
   }
   identity {
     type = "SystemAssigned"
@@ -285,7 +285,7 @@ resource "azurerm_api_management" "apim" {
     type = "SystemAssigned"
   }
 }
-/* 
+
 # Add Function App to API Management
 resource "azurerm_api_management_api" "func_app" {
   name                = "api-${azurerm_linux_function_app.func.name}"
@@ -298,6 +298,6 @@ resource "azurerm_api_management_api" "func_app" {
 
   import {
     content_format = "swagger-link-json"
-    content_value  = "https://${azurerm_linux_function_app.func.default_hostname}/?format=json"
+    content_value  = "http://${azurerm_linux_function_app.func.default_hostname}/?format=json"
   }
-} */
+}
