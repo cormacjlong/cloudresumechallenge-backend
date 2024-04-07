@@ -287,22 +287,6 @@ resource "azurerm_api_management" "apim" {
   }
 }
 
-# # Add Function App to API Management
-# resource "azurerm_api_management_api" "func_app" {
-#   name                = "api-${azurerm_linux_function_app.func.name}"
-#   resource_group_name = azurerm_resource_group.rg.name
-#   api_management_name = azurerm_api_management.apim.name
-#   revision            = "1"
-#   display_name        = "Visitor Counter"
-#   protocols           = ["https"]
-#   path                = "api/visitorcounter"
-
-#   import {
-#     content_format = "swagger-link-json"
-#     content_value  = "http://${azurerm_linux_function_app.func.default_hostname}/?format=json"
-#   }
-# }
-
 # Get Function App Keys
 data "azurerm_function_app_host_keys" "this" {
   name                = azurerm_linux_function_app.func.name
@@ -354,7 +338,7 @@ resource "azurerm_api_management_api_operation" "this" {
   api_name            = azurerm_api_management_api.this.name
   url_template        = "/visitorcounter"
   resource_group_name = azurerm_api_management.apim.resource_group_name
-  method              = "Get"
+  method              = "GET"
   operation_id        = "get-count"
 }
 
@@ -383,27 +367,11 @@ resource "azurerm_api_management_api_operation_policy" "this" {
   XML
 }
 
-# resource "azurerm_api_management_backend" "this" {
-#   name                = "backed-${azurerm_linux_function_app.func.name}"
-#   resource_group_name = azurerm_api_management.apim.resource_group_name
-#   api_management_name = azurerm_api_management.apim.name
-#   protocol            = "http"
-#   url                 = "https://${azurerm_linux_function_app.func.name}.azurewebsites.net/api/"
-#   credentials {
-#     header = {
-#       "x-functions-key" = "${data.azurerm_function_app_host_keys.this.default_function_key}"
-#     }
-#   }
-# }
-
-# resource "azurerm_api_management_api" "this" {
-#   name                = "example-api"
-#   resource_group_name = azurerm_resource_group.rg.name
-#   api_management_name = azurerm_api_management.apim.name
-#   revision            = "1"
-#   display_name        = "Example API"
-#   path                = "example"
-#   protocols           = ["https"]
-#   subscription_required = false
-
-# }
+# Create a CNAME record for the API Management Service
+resource "azurerm_dns_cname_record" "apim" {
+  name                = "${var.custom_url_prefix}-apim"
+  zone_name           = data.azurerm_dns_zone.dns_zone.name
+  resource_group_name = data.azurerm_dns_zone.dns_zone.resource_group_name
+  ttl                 = 3600
+  record              = azurerm_api_management.apim.gateway_url
+}
