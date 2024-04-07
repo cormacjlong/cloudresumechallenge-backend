@@ -217,12 +217,74 @@ resource "azurerm_role_assignment" "mi_keyvault_role_assignment" {
   principal_id         = data.azurerm_user_assigned_identity.mid.principal_id
 }
 
+# Create a Role Assignment for the APIM Managed Identity to access the Keyvault
+resource "azurerm_role_assignment" "apim_keyvault_role_assignment" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Certificates Officer"
+  principal_id         = azurerm_api_management.apim.identity.principal_id
+}
+
 # Add Cosmos DB connection string to Keyvault
 resource "azurerm_key_vault_secret" "cosmosdb_connection_string" {
   name         = var.connection_string_secret_name
   value        = "DefaultEndpointsProtocol=https;AccountName=${azurerm_cosmosdb_account.cosmosdb.name};AccountKey=${azurerm_cosmosdb_account.cosmosdb.primary_key};TableEndpoint=https://${azurerm_cosmosdb_account.cosmosdb.name}.table.cosmos.azure.com:443/;"
   key_vault_id = azurerm_key_vault.kv.id
   depends_on   = [azurerm_role_assignment.mi_keyvault_role_assignment]
+}
+
+# Create a client certificate for APIM
+resource "azurerm_key_vault_certificate" "apim_client_cert" {
+  name         = "${module.naming.key_vault_certificate.name}-apim"
+  key_vault_id = azurerm_key_vault.kv.id
+
+  certificate_policy {
+    issuer_parameters {
+      name = "Self"
+    }
+
+    key_properties {
+      exportable = true
+      key_size   = 2048
+      key_type   = "RSA"
+      reuse_key  = true
+    }
+
+    lifetime_action {
+      action {
+        action_type = "AutoRenew"
+      }
+
+      trigger {
+        days_before_expiry = 30
+      }
+    }
+
+    secret_properties {
+      content_type = "application/x-pkcs12"
+    }
+
+    x509_certificate_properties {
+      # Server Authentication = 1.3.6.1.5.5.7.3.1
+      # Client Authentication = 1.3.6.1.5.5.7.3.2
+      extended_key_usage = ["1.3.6.1.5.5.7.3.2"]
+
+      key_usage = [
+        "cRLSign",
+        "dataEncipherment",
+        "digitalSignature",
+        "keyAgreement",
+        "keyCertSign",
+        "keyEncipherment",
+      ]
+
+      subject_alternative_names {
+        dns_names = []
+      }
+
+      subject            = "CN=apim-client-cert"
+      validity_in_months = 1
+    }
+  }
 }
 
 # Get the Azure DNS Zone
