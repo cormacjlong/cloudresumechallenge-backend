@@ -349,9 +349,9 @@ resource "azurerm_api_management_api" "this" {
 
 # Create an API Operation in APIM
 resource "azurerm_api_management_api_operation" "this" {
-  display_name        = "Get Count"
+  display_name        = "get-count"
   api_management_name = azurerm_api_management.apim.name
-  api_name            = "get-count"
+  api_name            = azurerm_api_management_api.this.name
   url_template        = "/visitorcounter"
   resource_group_name = azurerm_api_management.apim.resource_group_name
   method              = "Get"
