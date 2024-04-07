@@ -347,7 +347,7 @@ resource "azurerm_api_management_api" "this" {
   protocols             = ["https"]
 }
 
-# Create an API Operation in APIM.
+# Create an API Operation in APIM
 resource "azurerm_api_management_api_operation" "this" {
   display_name        = "get-count"
   api_management_name = azurerm_api_management.apim.name
@@ -368,7 +368,7 @@ resource "azurerm_api_management_api_operation_policy" "this" {
     <policies>
       <inbound>
           <base />
-          <set-backend-service id="set-backend-service" backend-id="func-dev-crc-back-b7a8-backend" />
+          <set-backend-service id="set-backend-service" backend-id="${azurerm_api_management_backend.this.name}" />
       </inbound>
       <backend>
           <base />
