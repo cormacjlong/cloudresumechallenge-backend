@@ -286,18 +286,37 @@ resource "azurerm_api_management" "apim" {
   }
 }
 
-# Add Function App to API Management
-resource "azurerm_api_management_api" "func_app" {
-  name                = "api-${azurerm_linux_function_app.func.name}"
-  resource_group_name = azurerm_resource_group.rg.name
-  api_management_name = azurerm_api_management.apim.name
-  revision            = "1"
-  display_name        = "Visitor Counter"
-  protocols           = ["https"]
-  path                = "example"
+# # Add Function App to API Management
+# resource "azurerm_api_management_api" "func_app" {
+#   name                = "api-${azurerm_linux_function_app.func.name}"
+#   resource_group_name = azurerm_resource_group.rg.name
+#   api_management_name = azurerm_api_management.apim.name
+#   revision            = "1"
+#   display_name        = "Visitor Counter"
+#   protocols           = ["https"]
+#   path                = "api/visitorcounter"
 
-  import {
-    content_format = "swagger-link-json"
-    content_value  = "http://${azurerm_linux_function_app.func.default_hostname}/?format=json"
+#   import {
+#     content_format = "swagger-link-json"
+#     content_value  = "http://${azurerm_linux_function_app.func.default_hostname}/?format=json"
+#   }
+# }
+
+# Get Function App Keys
+data "azurerm_function_app_host_keys" "this" {
+  name                = azurerm_linux_function_app.func.name
+  resource_group_name = azurerm_resource_group.rg.name
+}
+
+resource "azurerm_api_management_backend" "this" {
+  name                = "backed-${azurerm_linux_function_app.func.name}"
+  resource_group_name = azurerm_api_management.apim.resource_group_name
+  api_management_name = azurerm_api_management.apim.name
+  protocol            = "http"
+  url                 = "https://${azurerm_linux_function_app.name}.azurewebsites.net/api/"
+  credentials {
+    header = {
+      "x-functions-key" = "${data.azurerm_function_app_host_keys.this.default_function_key}"
+    }
   }
 }
