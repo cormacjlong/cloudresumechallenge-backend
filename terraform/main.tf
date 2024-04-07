@@ -358,7 +358,7 @@ resource "azurerm_api_management_api_operation" "this" {
   api_name            = "visitorcounter"
   url_template        = "/visitorcounter"
   resource_group_name = azurerm_api_management.apim.resource_group_name
-  method              = "GET"
+  method              = "POST"
   operation_id        = "get-count"
 }
 
