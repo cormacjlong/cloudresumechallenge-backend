@@ -302,21 +302,36 @@ resource "azurerm_api_management" "apim" {
 #   }
 # }
 
-# Get Function App Keys
-data "azurerm_function_app_host_keys" "this" {
-  name                = azurerm_linux_function_app.func.name
-  resource_group_name = azurerm_linux_function_app.func.resource_group_name
-}
+# # Get Function App Keys
+# data "azurerm_function_app_host_keys" "this" {
+#   name                = azurerm_linux_function_app.func.name
+#   resource_group_name = azurerm_linux_function_app.func.resource_group_name
+# }
 
-resource "azurerm_api_management_backend" "this" {
-  name                = "backed-${azurerm_linux_function_app.func.name}"
-  resource_group_name = azurerm_api_management.apim.resource_group_name
+# resource "azurerm_api_management_backend" "this" {
+#   name                = "backed-${azurerm_linux_function_app.func.name}"
+#   resource_group_name = azurerm_api_management.apim.resource_group_name
+#   api_management_name = azurerm_api_management.apim.name
+#   protocol            = "http"
+#   url                 = "https://${azurerm_linux_function_app.func.name}.azurewebsites.net/api/"
+#   credentials {
+#     header = {
+#       "x-functions-key" = "${data.azurerm_function_app_host_keys.this.default_function_key}"
+#     }
+#   }
+# }
+
+resource "azurerm_api_management_api" "this" {
+  name                = "example-api"
+  resource_group_name = azurerm_resource_group.rg.name
   api_management_name = azurerm_api_management.apim.name
-  protocol            = "http"
-  url                 = "https://${azurerm_linux_function_app.func.name}.azurewebsites.net/api/"
-  credentials {
-    header = {
-      "x-functions-key" = "${data.azurerm_function_app_host_keys.this.default_function_key}"
-    }
+  revision            = "1"
+  display_name        = "Example API"
+  path                = "example"
+  protocols           = ["https"]
+
+  import {
+    content_format = "swagger-link-json"
+    content_value  = "http://conferenceapi.azurewebsites.net/?format=json"
   }
 }
