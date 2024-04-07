@@ -245,7 +245,7 @@ resource "azurerm_dns_txt_record" "funcapp-domain-verify" {
 }
 
 # Create a CNAME record for the Function App
-resource "azurerm_dns_cname_record" "funcapp_dns_record" {
+resource "azurerm_dns_cname_record" "funcapp-domain-verify" {
   name                = "${var.custom_url_prefix}-api"
   zone_name           = data.azurerm_dns_zone.dns_zone.name
   resource_group_name = data.azurerm_dns_zone.dns_zone.resource_group_name
@@ -254,6 +254,7 @@ resource "azurerm_dns_cname_record" "funcapp_dns_record" {
   depends_on          = [azurerm_dns_txt_record.funcapp-domain-verify]
 }
 
+# Bind custom domain to function app
 resource "azurerm_app_service_custom_hostname_binding" "funcapp_custom_hostname" {
   hostname            = substr(azurerm_dns_cname_record.funcapp_dns_record.fqdn, 0, length(azurerm_dns_cname_record.funcapp_dns_record.fqdn) - 1)
   app_service_name    = azurerm_linux_function_app.func.name
