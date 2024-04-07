@@ -3,7 +3,7 @@ import os
 import azure.functions as func
 from azure.data.tables import TableServiceClient
 
-app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
+app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
 @app.route(route="visitorcounter")
 def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
