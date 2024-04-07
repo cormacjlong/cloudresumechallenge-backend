@@ -347,7 +347,7 @@ resource "azurerm_api_management_api" "this" {
   protocols             = ["https"]
 }
 
-# Create an API Operation in APIM
+# Create an API Operation in APIM.
 resource "azurerm_api_management_api_operation" "this" {
   display_name        = "get-count"
   api_management_name = azurerm_api_management.apim.name
