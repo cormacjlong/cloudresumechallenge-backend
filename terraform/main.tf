@@ -338,7 +338,7 @@ resource "azurerm_api_management_backend" "this" {
 # Create an API in APIM
 resource "azurerm_api_management_api" "this" {
   name                  = "visitorcounter"
-  display_name          = "Visitor Counter"
+  display_name          = "visitorcounter"
   resource_group_name   = azurerm_api_management.apim.resource_group_name
   api_management_name   = azurerm_api_management.apim.name
   revision              = "1"
