@@ -351,6 +351,17 @@ resource "azurerm_api_management_api" "this" {
   }
 }
 
+# Create an API Operation in APIM
+resource "azurerm_api_management_api_operation" "this" {
+  display_name        = "visitorcounter"
+  api_management_name = azurerm_api_management.apim.name
+  api_name            = "visitorcounter"
+  url_template        = "/visitorcounter"
+  resource_group_name = azurerm_api_management.apim.resource_group_name
+  method              = "GET"
+  operation_id        = "get-count"
+}
+
 # resource "azurerm_api_management_backend" "this" {
 #   name                = "backed-${azurerm_linux_function_app.func.name}"
 #   resource_group_name = azurerm_api_management.apim.resource_group_name
