@@ -335,6 +335,23 @@ resource "azurerm_api_management_backend" "this" {
   }
 }
 
+# Create an API in APIM
+resource "azurerm_api_management_api" "this" {
+  name                  = "visitorcounter"
+  display_name          = "Visitor Counter"
+  resource_group_name   = azurerm_api_management.apim.resource_group_name
+  api_management_name   = azurerm_api_management.apim.name
+  revision              = "1"
+  subscription_required = true
+  path                  = "visitorcounter"
+  protocols             = ["https"]
+  subscription_key_parameter_names {
+    header = "Ocp-Apim-Subscription-Key"
+    query  = "subscription-key"
+  }
+  is_current = true
+}
+
 # resource "azurerm_api_management_backend" "this" {
 #   name                = "backed-${azurerm_linux_function_app.func.name}"
 #   resource_group_name = azurerm_api_management.apim.resource_group_name
