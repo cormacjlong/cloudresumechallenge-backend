@@ -343,7 +343,7 @@ resource "azurerm_api_management_api" "this" {
   api_management_name   = azurerm_api_management.apim.name
   revision              = "1"
   subscription_required = true
-  path                  = "visitorcounter"
+  path                  = azurerm_linux_function_app.func.name
   protocols             = ["https"]
   subscription_key_parameter_names {
     header = "Ocp-Apim-Subscription-Key"
