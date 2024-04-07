@@ -221,7 +221,7 @@ resource "azurerm_role_assignment" "mi_keyvault_role_assignment" {
 resource "azurerm_role_assignment" "apim_keyvault_role_assignment" {
   scope                = azurerm_key_vault.kv.id
   role_definition_name = "Key Vault Certificates Officer"
-  principal_id         = azurerm_api_management.apim.identity.principal_id
+  principal_id         = azurerm_api_management.apim.identity[0].principal_id
 }
 
 # Add Cosmos DB connection string to Keyvault
