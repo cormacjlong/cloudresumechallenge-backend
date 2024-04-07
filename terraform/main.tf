@@ -320,6 +320,21 @@ resource "azurerm_api_management_named_value" "this" {
   value  = data.azurerm_function_app_host_keys.this.default_function_key
 }
 
+# Create a Backend for the Function App in APIM
+resource "azurerm_api_management_backend" "this" {
+  name                = azurerm_linux_function_app.func.name
+  resource_group_name = azurerm_api_management.apim.resource_group_name
+  api_management_name = azurerm_api_management.apim.name
+  protocol            = "http"
+  url                 = "https://${azurerm_linux_function_app.func.name}.azurewebsites.net/api"
+  resource_id         = azurerm_linux_function_app.func.id
+  credentials {
+    header = {
+      "x-functions-key" = "{{${azurerm_api_management_named_value.this.name}}}"
+    }
+  }
+}
+
 # resource "azurerm_api_management_backend" "this" {
 #   name                = "backed-${azurerm_linux_function_app.func.name}"
 #   resource_group_name = azurerm_api_management.apim.resource_group_name
