@@ -63,3 +63,15 @@ variable "logging_on" {
   description = "Turning this on will create a Log Analytics Workspace and configure logging for resources."
   default     = false
 }
+
+variable "api_endpoint_name" {
+  type        = string
+  description = "The suffix for the API URL."
+  default     = "getvisitor"
+}
+
+variable "api_path" {
+  type        = string
+  description = "The path for the API."
+  default     = "api"
+}

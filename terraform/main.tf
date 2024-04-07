@@ -285,25 +285,25 @@ resource "azurerm_api_management_backend" "this" {
 
 # Create an API in APIM
 resource "azurerm_api_management_api" "this" {
-  name                  = "visitorcounter"
-  display_name          = "visitorcounter"
+  name                  = var.api_endpoint_name
+  display_name          = var.api_endpoint_name
   resource_group_name   = azurerm_api_management.apim.resource_group_name
   api_management_name   = azurerm_api_management.apim.name
   revision              = "1"
   subscription_required = false
-  path                  = "vc"
+  path                  = var.api_path
   protocols             = ["https"]
 }
 
 # Create an API Operation in APIM
 resource "azurerm_api_management_api_operation" "this" {
-  display_name        = "get-count"
+  display_name        = "get-${var.api_endpoint_name}"
   api_management_name = azurerm_api_management.apim.name
   api_name            = azurerm_api_management_api.this.name
-  url_template        = "/visitorcounter"
+  url_template        = "/${var.api_endpoint_name}"
   resource_group_name = azurerm_api_management.apim.resource_group_name
   method              = "GET"
-  operation_id        = "get-count"
+  operation_id        = var.api_endpoint_name
 }
 
 # Create an API Operation Policy in APIM
