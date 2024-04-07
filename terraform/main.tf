@@ -349,7 +349,6 @@ resource "azurerm_api_management_api" "this" {
     header = "Ocp-Apim-Subscription-Key"
     query  = "subscription-key"
   }
-  is_current = true
 }
 
 # resource "azurerm_api_management_backend" "this" {
