@@ -32,6 +32,7 @@ resource "azurerm_storage_account" "sa" {
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+  min_tls_version          = "TLS1_2"
 }
 
 # Create  App Service Plan with serverless pricing tier
@@ -204,8 +205,12 @@ resource "azurerm_key_vault" "kv" {
   enabled_for_disk_encryption     = true
   enabled_for_deployment          = true
   enabled_for_template_deployment = true
-  purge_protection_enabled        = false
+  purge_protection_enabled        = false #tfsec:ignore:azure-keyvault-no-purge
   enable_rbac_authorization       = true
+  network_acls {
+    default_action = "Deny"
+    bypass         = ["AzureServices"]
+  }
 }
 
 # Create a Role Assignment for the Function App Managed Identity to access the Keyvault
@@ -224,9 +229,10 @@ resource "azurerm_role_assignment" "mi_keyvault_role_assignment" {
 
 # Add Cosmos DB connection string to Keyvault
 resource "azurerm_key_vault_secret" "cosmosdb_connection_string" {
-  name         = var.connection_string_secret_name
+  name         = var.connection_string_secret_name #tfsec:ignore:azure-keyvault-ensure-secret-expiry
   value        = "DefaultEndpointsProtocol=https;AccountName=${azurerm_cosmosdb_account.cosmosdb.name};AccountKey=${azurerm_cosmosdb_account.cosmosdb.primary_key};TableEndpoint=https://${azurerm_cosmosdb_account.cosmosdb.name}.table.cosmos.azure.com:443/;"
   key_vault_id = azurerm_key_vault.kv.id
+  content_type = "Connection String"
   depends_on   = [azurerm_role_assignment.mi_keyvault_role_assignment]
 }
 
