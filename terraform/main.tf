@@ -228,8 +228,8 @@ resource "azurerm_role_assignment" "mi_keyvault_role_assignment" {
 }
 
 # Add Cosmos DB connection string to Keyvault
-resource "azurerm_key_vault_secret" "cosmosdb_connection_string" {
-  name         = var.connection_string_secret_name #tfsec:ignore:azure-keyvault-ensure-secret-expiry
+resource "azurerm_key_vault_secret" "cosmosdb_connection_string" { #tfsec:ignore:azure-keyvault-ensure-secret-expiry
+  name         = var.connection_string_secret_name
   value        = "DefaultEndpointsProtocol=https;AccountName=${azurerm_cosmosdb_account.cosmosdb.name};AccountKey=${azurerm_cosmosdb_account.cosmosdb.primary_key};TableEndpoint=https://${azurerm_cosmosdb_account.cosmosdb.name}.table.cosmos.azure.com:443/;"
   key_vault_id = azurerm_key_vault.kv.id
   content_type = "Connection String"
