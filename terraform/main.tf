@@ -209,7 +209,7 @@ resource "azurerm_key_vault" "kv" {
   enable_rbac_authorization       = true
   network_acls {
     default_action = "Deny"
-    bypass         = ["AzureServices"]
+    bypass         = "AzureServices"
   }
 }
 
