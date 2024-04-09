@@ -227,6 +227,20 @@ resource "azurerm_role_assignment" "mi_keyvault_role_assignment" {
   principal_id         = data.azurerm_user_assigned_identity.mid.principal_id
 }
 
+# Add Github Action Runner Ip to Keyvault ACL allow list
+resource "null_resource" "add_github_runner_ip_to_kv_acl" {
+  triggers = {
+    always_run = timestamp()
+  }
+
+  provisioner "local-exec" {
+    command = <<EOF
+      az keyvault network-rule add --name ${azurerm_key_vault.kv.name} --resource-group ${azurerm_resource_group.rg.name} --ip-address $(curl -s https://api.ipify.org/) --action Allow
+    EOF
+  }
+
+}
+
 # Add Cosmos DB connection string to Keyvault
 resource "azurerm_key_vault_secret" "cosmosdb_connection_string" { #tfsec:ignore:azure-keyvault-ensure-secret-expiry
   name         = var.connection_string_secret_name
