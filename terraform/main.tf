@@ -207,12 +207,11 @@ resource "azurerm_key_vault" "kv" {
   enabled_for_template_deployment = true
   purge_protection_enabled        = false #tfsec:ignore:azure-keyvault-no-purge
   enable_rbac_authorization       = true
-  #tfsec:ignore:azure-keyvault-specify-network-acl
-  # network_acls {
-  #   default_action = "Deny"
-  #   bypass         = "AzureServices"
-  #   ip_rules       = ["172.180.0.0/14", "172.184.0.0/14"]
-  # }
+  network_acls { #tfsec:ignore:azure-keyvault-specify-network-acl
+    default_action = "Allow"
+    bypass         = "AzureServices"
+    #   ip_rules       = ["172.180.0.0/14", "172.184.0.0/14"]
+  }
 }
 
 # Create a Role Assignment for the Function App Managed Identity to access the Keyvault
