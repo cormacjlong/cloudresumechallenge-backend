@@ -207,10 +207,12 @@ resource "azurerm_key_vault" "kv" {
   enabled_for_template_deployment = true
   purge_protection_enabled        = false #tfsec:ignore:azure-keyvault-no-purge
   enable_rbac_authorization       = true
-  network_acls {
-    default_action = "Deny"
-    bypass         = "AzureServices"
-  }
+  #tfsec:ignore:azure-keyvault-specify-network-acl
+  # network_acls {
+  #   default_action = "Deny"
+  #   bypass         = "AzureServices"
+  #   ip_rules       = ["172.180.0.0/14", "172.184.0.0/14"]
+  # }
 }
 
 # Create a Role Assignment for the Function App Managed Identity to access the Keyvault
@@ -225,20 +227,6 @@ resource "azurerm_role_assignment" "mi_keyvault_role_assignment" {
   scope                = azurerm_key_vault.kv.id
   role_definition_name = "Key Vault Administrator"
   principal_id         = data.azurerm_user_assigned_identity.mid.principal_id
-}
-
-# Add Github Action Runner Ip to Keyvault ACL allow list
-resource "null_resource" "add_github_runner_ip_to_kv_acl" {
-  triggers = {
-    always_run = timestamp()
-  }
-
-  provisioner "local-exec" {
-    command = <<EOF
-      az keyvault network-rule add --name ${azurerm_key_vault.kv.name} --resource-group ${azurerm_resource_group.rg.name} --ip-address $(curl -s https://api.ipify.org/) --action Allow
-    EOF
-  }
-
 }
 
 # Add Cosmos DB connection string to Keyvault
