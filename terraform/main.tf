@@ -339,12 +339,6 @@ resource "azurerm_api_management_api_operation_policy" "this" {
   XML
 }
 
-# Get the Azure DNS Zone
-data "azurerm_dns_zone" "dns_zone" {
-  name                = var.azure_dns_zone_name
-  resource_group_name = var.azure_dns_zone_resource_group_name
-}
-
 # Create a DNS record for the APIM Gateway
 resource "azurerm_dns_cname_record" "apim_gateway" {
   name                = local.custom_url_prefix_full
