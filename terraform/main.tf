@@ -355,7 +355,7 @@ resource "azurerm_dns_txt_record" "apim_gateway" {
   resource_group_name = data.azurerm_dns_zone.dns_zone.resource_group_name
   ttl                 = 300
   record {
-    value = jsondecode(data.azapi_resource_action.get_domain_ownership_identifier.output).keys.0.value
+    value = jsondecode(data.azapi_resource_action.get_domain_ownership_identifier.output).domainOwnershipIdentifier
   }
 }
 
