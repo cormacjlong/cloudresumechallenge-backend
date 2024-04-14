@@ -41,15 +41,19 @@ jobs:
     # Checks linting of Terraform configuration files
     - name: TFLint - Setup
       uses: terraform-linters/setup-tflint@v4
+
+    - name: TFLint - ChangeDir
+      run: tflint --chdir=terraform
     
     - name: TFLint - Init
-      run: tflint --init ./terraform
+      run: tflint --init
 
     - name: TFLint - Run
-      run: tflint -f compact --recursive ./terraform
+      run: tflint -f compact --recursive
 
   terraform-plan:
     name: 'Terraform Plan'
+    needs: [iac-code-check]
     runs-on: ubuntu-latest
     env:
       ARM_SKIP_PROVIDER_REGISTRATION: true
