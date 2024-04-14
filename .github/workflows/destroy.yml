@@ -39,6 +39,15 @@ jobs:
       run: terraform init
       working-directory: ./terraform
 
+    # Login to Azure. Needed to ensure APIM custom domain can be deleted, because of local-exec script use.
+    - name: Login to Azure
+      id: LoginToAzure
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
     # Terraform Destroy
     - name: Terraform Destroy
       id: tf-destroy

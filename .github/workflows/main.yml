@@ -141,7 +141,7 @@ jobs:
         name: tfplan
         path: ./terraform/
 
-    # Login to Azure
+    # Login to Azure. Needed to ensure APIM custom domain can be added, because of local-exec script use.
     - name: Login to Azure
       id: LoginToAzure
       uses: azure/login@v2
