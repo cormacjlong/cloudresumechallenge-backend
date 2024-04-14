@@ -344,6 +344,7 @@ data "azapi_resource_action" "get_domain_ownership_identifier" {
   type                   = "Microsoft.ApiManagement@2022-08-01"
   resource_id            = "/subscriptions/${data.azurerm_subscription.current.subscription_id}/providers/Microsoft.ApiManagement"
   action                 = "getDomainOwnershipIdentifier"
+  method                 = "POST"
   response_export_values = ["*"]
 }
 
@@ -354,7 +355,7 @@ resource "azurerm_dns_txt_record" "apim_gateway" {
   resource_group_name = data.azurerm_dns_zone.dns_zone.resource_group_name
   ttl                 = 300
   record {
-    value = "testing"
+    value = jsondecode(data.azapi_resource_action.get_domain_ownership_identifier.output).keys.0.value
   }
 }
 
