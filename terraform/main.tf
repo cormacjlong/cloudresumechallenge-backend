@@ -341,7 +341,7 @@ resource "azurerm_api_management_api_operation_policy" "this" {
 
 # Create a DNS record for the APIM Gateway
 resource "azurerm_dns_cname_record" "apim_gateway" {
-  name                = local.custom_url_prefix_full
+  name                = "${local.custom_url_prefix_full}-api"
   zone_name           = data.azurerm_dns_zone.dns_zone.name
   resource_group_name = data.azurerm_dns_zone.dns_zone.resource_group_name
   ttl                 = 300
