@@ -59,12 +59,18 @@ jobs:
       with:
         working_directory: ./terraform
 
-    # Checks that all Terraform configuration files adhere to linting principals
+    # Checks linting of Terraform configuration files
     # Will fail the build if not
-    - name: Terraform Tflint
-      uses: devops-infra/action-tflint@v0.3
-      with:
-        dir_filter: terraform
+    - name: Setup TFLint
+      uses: terraform-linters/setup-tflint@v4
+    
+    - name: Init TFLint
+      run: tflint --init
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Run TFLint
+      run: tflint -f compact
 
     # Generates an execution plan for Terraform
     # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
