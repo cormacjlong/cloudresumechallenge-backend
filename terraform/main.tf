@@ -345,5 +345,5 @@ resource "azurerm_dns_cname_record" "apim_gateway" {
   zone_name           = data.azurerm_dns_zone.dns_zone.name
   resource_group_name = data.azurerm_dns_zone.dns_zone.resource_group_name
   ttl                 = 300
-  record              = azurerm_api_management.apim.gateway_url
+  record              = trimprefix(azurerm_api_management.apim.gateway_url, "https://")
 }
