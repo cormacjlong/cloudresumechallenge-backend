@@ -348,7 +348,7 @@ data "azapi_resource_action" "get_domain_ownership_identifier" {
   response_export_values = ["*"]
 }
 
-# Create a CNAME DNS record for the APIM Gateway
+# Create a TXT DNS record for the APIM Gateway
 resource "azurerm_dns_txt_record" "apim_gateway" {
   name                = "apimuid.${local.custom_url_prefix_full}-api"
   zone_name           = data.azurerm_dns_zone.dns_zone.name
@@ -361,9 +361,28 @@ resource "azurerm_dns_txt_record" "apim_gateway" {
 
 # Create a CNAME DNS record for the APIM Gateway
 resource "azurerm_dns_cname_record" "apim_gateway" {
+  depends_on          = [azurerm_dns_txt_record.apim_gateway]
   name                = "${local.custom_url_prefix_full}-api"
   zone_name           = data.azurerm_dns_zone.dns_zone.name
   resource_group_name = data.azurerm_dns_zone.dns_zone.resource_group_name
   ttl                 = 300
   record              = trimprefix(azurerm_api_management.apim.gateway_url, "https://")
+}
+
+# Add custom domain to APIM
+resource "null_resource" "apim_customdomain" {
+  triggers = {
+    apim_name = azurerm_api_management.apim.name
+    rg        = azurerm_api_management.apim.resource_group_name
+    api_url   = substr(azurerm_dns_cname_record.apim_gateway.fqdn, 0, length(azurerm_dns_cname_record.apim_gateway.fqdn) - 1)
+  }
+
+  provisioner "local-exec" {
+    command = "az apim update -n ${self.triggers.apim_name} -g ${self.triggers.rg} --set hostnameConfigurations='[{\"hostName\":\"${self.triggers.api_url}\",\"type\":\"Proxy\",\"certificateSource\":\"Managed\"}]'"
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = "az apim update -n ${self.triggers.apim_name} -g ${self.triggers.rg} --remove hostnameConfigurations"
+  }
 }
