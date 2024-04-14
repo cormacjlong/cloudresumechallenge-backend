@@ -339,7 +339,17 @@ resource "azurerm_api_management_api_operation_policy" "this" {
   XML
 }
 
-# Create a DNS record for the APIM Gateway
+# Get the Domain Ownership Identifier for the APIM Gateway
+resource "azapi_resource_action" "get_domain_ownership_identifier" {
+  type                   = "Microsoft.ApiManagement@2022-08-01"
+  resource_id            = azurerm_api_management.apim.id
+  action                 = "getDomainOwnershipIdentifier"
+  response_export_values = ["*"]
+}
+
+# Create a CNAME DNS record for the APIM Gateway
+
+# Create a CNAME DNS record for the APIM Gateway
 resource "azurerm_dns_cname_record" "apim_gateway" {
   name                = "${local.custom_url_prefix_full}-api"
   zone_name           = data.azurerm_dns_zone.dns_zone.name

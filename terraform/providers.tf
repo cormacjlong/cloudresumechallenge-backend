@@ -6,7 +6,9 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~>3.97.1"
     }
-
+    azapi = {
+      source = "Azure/azapi"
+    }
     random = {
       source  = "hashicorp/random"
       version = "~>3.0"
@@ -25,4 +27,7 @@ terraform {
 provider "azurerm" {
   use_oidc = true
   features {}
+}
+provider "azapi" {
+  use_oidc = true
 }
