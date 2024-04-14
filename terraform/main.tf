@@ -341,7 +341,7 @@ resource "azurerm_api_management_api_operation_policy" "this" {
 
 # Get the Domain Ownership Identifier for the APIM Gateway
 data "azapi_resource_action" "get_domain_ownership_identifier" {
-  type                   = "Microsoft.ApiManagement/service@2022-08-01"
+  type                   = "Microsoft.ApiManagement@2022-08-01"
   resource_id            = "/subscriptions/${data.azurerm_subscription.current.subscription_id}/providers/Microsoft.ApiManagement"
   action                 = "getDomainOwnershipIdentifier"
   response_export_values = ["*"]
