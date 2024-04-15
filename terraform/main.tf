@@ -328,7 +328,7 @@ resource "azurerm_api_management_api_operation_policy" "this" {
           <rate-limit calls="50" renewal-period="300" />
           <cors allow-credentials="false">
             <allowed-origins>
-                <origin>https://${var.custom_url_prefix}.${var.azure_dns_zone_name}</origin>
+                <origin>https://${local.custom_url_prefix_full}.${var.azure_dns_zone_name}</origin>
             </allowed-origins>
             <allowed-methods>
                 <method>GET</method>
