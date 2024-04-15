@@ -73,9 +73,9 @@ resource "azurerm_linux_function_app" "func" {
     application_stack {
       python_version = "3.11"
     }
-    cors {
-      allowed_origins = ["https://${var.custom_url_prefix}.${var.azure_dns_zone_name}"]
-    }
+    # cors {
+    #   allowed_origins = ["https://${var.custom_url_prefix}.${var.azure_dns_zone_name}"]
+    # }
     //api_management_api_id = azurerm_api_management.apim.id
   }
   identity {
@@ -326,6 +326,15 @@ resource "azurerm_api_management_api_operation_policy" "this" {
           <base />
           <set-backend-service id="set-backend-service" backend-id="${azurerm_api_management_backend.this.name}" />
           <rate-limit calls="50" renewal-period="300" />
+          <cors allow-credentials="false">
+            <allowed-origins>
+                <origin>"https://${var.custom_url_prefix}.${var.azure_dns_zone_name}"</origin>
+            </allowed-origins>
+            <allowed-methods>
+                <method>GET</method>
+                <method>POST</method>
+            </allowed-methods>
+          </cors>
       </inbound>
       <backend>
           <base />
