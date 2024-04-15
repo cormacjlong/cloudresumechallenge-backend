@@ -11,6 +11,7 @@ module "naming" {
   source      = "Azure/naming/azurerm"
   suffix      = concat(var.env, var.project_prefix)
   unique-seed = data.azurerm_subscription.current.subscription_id
+  version     = "0.4.1"
 }
 
 # Get the Managed User Identity
@@ -94,17 +95,17 @@ resource "azurerm_linux_function_app" "func" {
 resource "azurerm_role_assignment" "func_blobowner_storage_role_assignment" {
   scope                = azurerm_storage_account.sa.id
   role_definition_name = "Storage Blob Data Owner"
-  principal_id         = azurerm_linux_function_app.func.identity.0.principal_id
+  principal_id         = azurerm_linux_function_app.func.identity[0].principal_id
 }
 resource "azurerm_role_assignment" "func_accountcontributor_storage_role_assignment" {
   scope                = azurerm_storage_account.sa.id
   role_definition_name = "Storage Account Contributor"
-  principal_id         = azurerm_linux_function_app.func.identity.0.principal_id
+  principal_id         = azurerm_linux_function_app.func.identity[0].principal_id
 }
 resource "azurerm_role_assignment" "func_queuecontributor_storage_role_assignment" {
   scope                = azurerm_storage_account.sa.id
   role_definition_name = "Storage Queue Data Contributor"
-  principal_id         = azurerm_linux_function_app.func.identity.0.principal_id
+  principal_id         = azurerm_linux_function_app.func.identity[0].principal_id
 }
 
 # Create CosmosDB account
@@ -218,7 +219,7 @@ resource "azurerm_key_vault" "kv" {
 resource "azurerm_role_assignment" "func_cosmosdb_role_assignment" {
   scope                = azurerm_key_vault.kv.id
   role_definition_name = "Key Vault Secrets User"
-  principal_id         = azurerm_linux_function_app.func.identity.0.principal_id
+  principal_id         = azurerm_linux_function_app.func.identity[0].principal_id
 }
 
 # Create a Role Assignment for the main Managed Identity to access the Keyvault

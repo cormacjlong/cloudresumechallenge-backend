@@ -41,7 +41,7 @@ jobs:
     # Checks linting of Terraform configuration files
     - name: TFLint - Setup
       uses: terraform-linters/setup-tflint@v4
-    
+      
     - name: TFLint - Init
       run: tflint --init --chdir=terraform
 

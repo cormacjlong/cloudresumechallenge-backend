@@ -75,9 +75,3 @@ variable "api_path" {
   description = "The path for the API."
   default     = "api"
 }
-
-variable "github_runner_ip" {
-  type        = string
-  description = "The IP address of the GitHub runner."
-  default     = "1.1.1.1"
-}
