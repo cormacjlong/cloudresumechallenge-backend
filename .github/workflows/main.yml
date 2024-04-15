@@ -43,7 +43,7 @@ jobs:
       uses: terraform-linters/setup-tflint@v4
       
     - name: TFLint - Init
-      run: tflint --init --chdir=terraform --config=terraform/.tflint.hcl
+      run: tflint --init --chdir=terraform --config=./terraform/.tflint.hcl
 
     - name: TFLint - Run
       run: tflint -f compact --recursive
