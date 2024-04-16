@@ -73,10 +73,6 @@ resource "azurerm_linux_function_app" "func" {
     application_stack {
       python_version = "3.11"
     }
-    # cors {
-    #   allowed_origins = ["https://${var.custom_url_prefix}.${var.azure_dns_zone_name}"]
-    # }
-    //api_management_api_id = azurerm_api_management.apim.id
   }
   identity {
     type = "SystemAssigned"
@@ -358,7 +354,7 @@ data "azapi_resource_action" "get_domain_ownership_identifier" {
   response_export_values = ["*"]
 }
 
-# Create a TXT DNS record for the APIM Gateway
+# Create a TXT DNS record for the APIM Gateway to verify ownership of domain
 resource "azurerm_dns_txt_record" "apim_gateway" {
   name                = "apimuid.${local.custom_url_prefix_full}-api"
   zone_name           = data.azurerm_dns_zone.dns_zone.name
