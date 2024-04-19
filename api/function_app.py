@@ -19,7 +19,7 @@ def visitorcounter(req: func.HttpRequest) -> func.HttpResponse:
         )
 
     try:
-        # Initialize TableServiceClient using the managed identity credential
+        # Initialise TableServiceClient using the managed identity credential
         table_service_client = TableServiceClient.from_connection_string(conn_str=cosmos_connection_string)
         logging.info('TableServiceClient initialized.')
 
