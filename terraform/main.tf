@@ -375,6 +375,7 @@ resource "azurerm_dns_cname_record" "apim_gateway" {
   record              = trimprefix(azurerm_api_management.apim.gateway_url, "https://")
 }
 
+# Refresh the login credentials for Azure
 data "external" "login" {
   program = ["bash", "${path.module}/../scripts/refresh.sh"]
   query = {
