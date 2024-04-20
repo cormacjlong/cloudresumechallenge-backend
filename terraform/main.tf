@@ -390,7 +390,7 @@ resource "null_resource" "apim_customdomain" {
     apim_name = azurerm_api_management.apim.name
     rg        = azurerm_api_management.apim.resource_group_name
     api_url   = substr(azurerm_dns_cname_record.apim_gateway.fqdn, 0, length(azurerm_dns_cname_record.apim_gateway.fqdn) - 1)
-    result    = data.external.login
+    result    = data.external.login.result
   }
 
   provisioner "local-exec" {
