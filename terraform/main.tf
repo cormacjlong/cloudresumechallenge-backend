@@ -375,12 +375,22 @@ resource "azurerm_dns_cname_record" "apim_gateway" {
   record              = trimprefix(azurerm_api_management.apim.gateway_url, "https://")
 }
 
+data "external" "login" {
+  program = ["bash", "${path.module}/../scripts/refresh.sh"]
+  query = {
+    client_id       = data.azurerm_client_config.current.client_id
+    tenant_id       = data.azurerm_client_config.current.tenant_id
+    subscription_id = data.azurerm_client_config.current.subscription_id
+  }
+}
+
 # Add custom domain to APIM
 resource "null_resource" "apim_customdomain" {
   triggers = {
     apim_name = azurerm_api_management.apim.name
     rg        = azurerm_api_management.apim.resource_group_name
     api_url   = substr(azurerm_dns_cname_record.apim_gateway.fqdn, 0, length(azurerm_dns_cname_record.apim_gateway.fqdn) - 1)
+    result    = data.external.login
   }
 
   provisioner "local-exec" {
