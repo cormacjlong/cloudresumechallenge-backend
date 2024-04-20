@@ -395,12 +395,12 @@ resource "null_resource" "apim_customdomain" {
   }
 
   provisioner "local-exec" {
-    command = "Start-Sleep -Seconds 10 && az apim update -n ${self.triggers.apim_name} -g ${self.triggers.rg} --set hostnameConfigurations='[{\"hostName\":\"${self.triggers.api_url}\",\"type\":\"Proxy\",\"certificateSource\":\"Managed\"}]'"
+    command = "sleep 10 && az apim update -n ${self.triggers.apim_name} -g ${self.triggers.rg} --set hostnameConfigurations='[{\"hostName\":\"${self.triggers.api_url}\",\"type\":\"Proxy\",\"certificateSource\":\"Managed\"}]'"
   }
 
   provisioner "local-exec" {
     when    = destroy
-    command = "Start-Sleep -Seconds 10 && az apim update -n ${self.triggers.apim_name} -g ${self.triggers.rg} --remove hostnameConfigurations"
+    command = "sleep 10 && az apim update -n ${self.triggers.apim_name} -g ${self.triggers.rg} --remove hostnameConfigurations"
   }
   depends_on = [data.external.login]
 }
