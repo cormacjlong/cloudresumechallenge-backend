@@ -253,7 +253,6 @@ resource "azurerm_api_management_named_value" "this" {
   api_management_name = azurerm_api_management.this.name
   secret              = true
   value               = data.azurerm_function_app_host_keys.this.default_function_key
-  tags                = local.common_tags
 }
 
 # Create a Backend for the Function App in APIM
