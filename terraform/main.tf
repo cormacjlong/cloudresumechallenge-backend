@@ -17,7 +17,7 @@ module "naming" {
 # Get the Managed User Identity
 data "azurerm_user_assigned_identity" "this" {
   name                = var.managed_identity_name
-  resource_group_name = var.managed_identity_resource_group
+  resource_group_name = var.mid_resource_group_name
 }
 
 # Create a resource group to host the backend resources
