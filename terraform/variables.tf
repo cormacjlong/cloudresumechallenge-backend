@@ -64,12 +64,6 @@ variable "logging_on" {
   default     = false
 }
 
-variable "logging_resource_group_name" {
-  type        = string
-  description = "The name of the resource group to create the logging resources in."
-  default     = "rg-platform-management"
-}
-
 variable "api_endpoint_name" {
   type        = string
   description = "The suffix for the API URL."

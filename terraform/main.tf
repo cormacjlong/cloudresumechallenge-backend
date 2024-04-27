@@ -4,6 +4,12 @@ data "azurerm_subscription" "current" {}
 
 locals {
   custom_url_prefix_full = var.env == "prod" ? var.custom_url_prefix : "${var.custom_url_prefix}-${var.env[0]}"
+  common_tags            = {
+    Environment = var.env[0]
+    WorkloadName     = "CloudResumeChallenge"
+    DataClassification = "Public"
+    Criticality = "Non-Critical"
+  }
 }
 
 # Naming module to ensure all resources have naming standard applied
@@ -24,6 +30,7 @@ data "azurerm_user_assigned_identity" "this" {
 resource "azurerm_resource_group" "this" {
   location = var.resource_location
   name     = module.naming.resource_group.name
+  tags = local.common_tags
 }
 
 # Create Storage Account to host the Function App
@@ -34,6 +41,7 @@ resource "azurerm_storage_account" "this" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
+  tags = local.common_tags
 }
 
 # Create  App Service Plan with serverless pricing tier
@@ -43,6 +51,7 @@ resource "azurerm_service_plan" "this" {
   resource_group_name = azurerm_resource_group.this.name
   os_type             = "Linux"
   sku_name            = "Y1"
+  tags = local.common_tags
 }
 
 # Create the Function App
@@ -62,11 +71,13 @@ resource "azurerm_linux_function_app" "this" {
     "cosmos_endpoint"                = azurerm_cosmosdb_account.this.endpoint
     "daily_memory_time_quota"        = "50000"
   }
+
   connection_string {
     name  = "Default"
     type  = "Custom"
     value = "@Microsoft.KeyVault(VaultName=${azurerm_key_vault.this.name};SecretName=${var.connection_string_secret_name})"
   }
+
   site_config {
     ftps_state                             = "FtpsOnly"
     application_insights_key               = var.logging_on == true ? azurerm_application_insights.this[0].instrumentation_key : null
@@ -75,9 +86,13 @@ resource "azurerm_linux_function_app" "this" {
       python_version = "3.11"
     }
   }
+
   identity {
     type = "SystemAssigned"
   }
+
+  tags = local.common_tags
+
   lifecycle {
     ignore_changes = [
       app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"],
@@ -113,21 +128,27 @@ resource "azurerm_cosmosdb_account" "this" {
   offer_type          = "Standard"
   kind                = "GlobalDocumentDB"
   minimal_tls_version = "Tls12"
+
   consistency_policy {
     consistency_level       = "BoundedStaleness"
     max_interval_in_seconds = 300
     max_staleness_prefix    = 100000
   }
+
   geo_location {
     location          = azurerm_resource_group.this.location
     failover_priority = 0
   }
+
   capabilities {
     name = "EnableServerless"
   }
+
   capabilities {
     name = "EnableTable"
   }
+
+  tags = local.common_tags
 }
 
 # Create a Role Assignment for the main Managed Identity to access the CosmosDB account
@@ -169,6 +190,7 @@ resource "azurerm_key_vault" "this" {
     bypass         = "AzureServices"
     #   ip_rules       = ["172.180.0.0/14", "172.184.0.0/14"]
   }
+  tags = local.common_tags
 }
 
 # Create a Role Assignment for the Function App Managed Identity to access the Keyvault
@@ -192,6 +214,7 @@ resource "azurerm_key_vault_secret" "cosmosdb_connection_string" { #tfsec:ignore
   key_vault_id = azurerm_key_vault.this.id
   content_type = "Connection String"
   depends_on   = [azurerm_role_assignment.kv_administrator_mid]
+  tags = local.common_tags
 }
 
 # Get the Azure DNS Zone
@@ -213,6 +236,7 @@ resource "azurerm_api_management" "this" {
   identity {
     type = "SystemAssigned"
   }
+  tags = local.common_tags
 }
 
 # Get Function App Keys
@@ -227,9 +251,9 @@ resource "azurerm_api_management_named_value" "this" {
   display_name        = "${azurerm_linux_function_app.this.name}-key"
   resource_group_name = azurerm_api_management.this.resource_group_name
   api_management_name = azurerm_api_management.this.name
-  #tags                = ["key", "function", "auto"]
   secret = true
   value  = data.azurerm_function_app_host_keys.this.default_function_key
+  tags = local.common_tags
 }
 
 # Create a Backend for the Function App in APIM
@@ -323,6 +347,7 @@ resource "azurerm_dns_txt_record" "apim_gateway" {
   record {
     value = jsondecode(data.azapi_resource_action.get_domain_ownership_identifier.output).domainOwnershipIdentifier
   }
+  tags = local.common_tags
 }
 
 # Create a CNAME DNS record for the APIM Gateway
@@ -333,6 +358,7 @@ resource "azurerm_dns_cname_record" "apim_gateway" {
   resource_group_name = data.azurerm_dns_zone.this.resource_group_name
   ttl                 = 300
   record              = trimprefix(azurerm_api_management.this.gateway_url, "https://")
+  tags = local.common_tags
 }
 
 # Refresh the login credentials for Azure
