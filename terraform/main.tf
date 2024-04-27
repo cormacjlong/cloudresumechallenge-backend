@@ -60,6 +60,7 @@ resource "azurerm_linux_function_app" "func" {
     "FUNCTIONS_WORKER_RUNTIME"       = "python"
     "AzureWebJobsFeatureFlags"       = "EnableWorkerIndexing"
     "cosmos_endpoint"                = azurerm_cosmosdb_account.cosmosdb.endpoint
+    "daily_memory_time_quota"        = "50000"
   }
   connection_string {
     name  = "Default"
