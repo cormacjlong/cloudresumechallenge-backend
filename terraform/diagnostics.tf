@@ -53,7 +53,6 @@ module "config_diagnostics" {
     join("", [azurerm_storage_account.this.id, "/queueServices/default"]),
     join("", [azurerm_storage_account.this.id, "/tableServices/default"]),
     join("", [azurerm_storage_account.this.id, "/fileServices/default"]),
-    azurerm_key_vault.this.id,
-    azurerm_api_management.this.id
+    azurerm_key_vault.this.id
   ]
 }
