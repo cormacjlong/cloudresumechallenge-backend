@@ -40,7 +40,7 @@ variable "managed_identity_name" {
   default     = "id-github-crc"
 }
 
-variable "managed_identity_resource_group" {
+variable "mid_resource_group_name" {
   type        = string
   description = "The resource group of the managed identity to retrieve."
   default     = "rg-platform-identity"
@@ -61,7 +61,7 @@ variable "connection_string_secret_name" {
 variable "logging_on" {
   type        = bool
   description = "Turning this on will create a Log Analytics Workspace and configure logging for resources."
-  default     = true
+  default     = false
 }
 
 variable "logging_resource_group_name" {
