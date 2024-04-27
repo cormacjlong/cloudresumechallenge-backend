@@ -199,6 +199,6 @@ jobs:
       id: fa
       with:
         app-name: ${{ steps.tf-apply-outputs.outputs.function_app_name }}
-        package: "./api"
+        package: "../api"
         scm-do-build-during-deployment: true
         enable-oryx-build: true
