@@ -1,7 +1,5 @@
 data "azurerm_client_config" "current" {}
 
-data "azurerm_subscription" "current" {}
-
 locals {
   custom_url_prefix_full = var.env == "prod" ? var.custom_url_prefix : "${var.custom_url_prefix}-${var.env[0]}"
   common_tags = {
@@ -16,7 +14,7 @@ locals {
 module "naming" {
   source      = "Azure/naming/azurerm"
   suffix      = concat(var.env, var.project_prefix)
-  unique-seed = data.azurerm_subscription.current.subscription_id
+  unique-seed = data.azurerm_client_config.current.subscription_id
   version     = "0.4.1"
 }
 
@@ -331,7 +329,7 @@ resource "azurerm_api_management_api_operation_policy" "this" {
 # Get the Domain Ownership Identifier for the APIM Gateway
 data "azapi_resource_action" "get_domain_ownership_identifier" {
   type                   = "Microsoft.ApiManagement@2022-08-01"
-  resource_id            = "/subscriptions/${data.azurerm_subscription.current.subscription_id}/providers/Microsoft.ApiManagement"
+  resource_id            = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/providers/Microsoft.ApiManagement"
   action                 = "getDomainOwnershipIdentifier"
   method                 = "POST"
   response_export_values = ["*"]
