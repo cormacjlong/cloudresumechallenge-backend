@@ -35,10 +35,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    # Setup Python and install dependencies
     - name: Setup Python Environment
       uses: actions/setup-python@v4
 
-    # Install Python dependcies
     - name: Install Python dependcies
       shell: bash
       run: |
@@ -185,6 +185,21 @@ jobs:
         "function_app_python_version=$(((Select-String -Path ./apply_output.txt -Pattern 'function_app_python_version').line -split '"')[1])" >> $env:GITHUB_OUTPUT
       working-directory: ./terraform
 
+    # Setup Python and install dependencies
+    - name: Setup Python Environment
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ steps.tf-apply-outputs.outputs.function_app_python_version }}
+
+    - name: Install Python dependcies
+      shell: bash
+      run: |
+        pushd './api/' > /dev/null
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+        popd
+        echo "PYTHONPATH=${GITHUB_WORKSPACE}/api/.python_packages/lib/site-packages" >> $GITHUB_ENV
+
     # Login to Azure and deploy Function App.
     - name: Login to Azure
       id: LoginToAzure
@@ -199,6 +214,6 @@ jobs:
       id: fa
       with:
         app-name: ${{ steps.tf-apply-outputs.outputs.function_app_name }}
-        package: "../api"
+        package: "./api"
         scm-do-build-during-deployment: true
         enable-oryx-build: true
