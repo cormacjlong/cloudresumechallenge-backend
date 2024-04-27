@@ -4,11 +4,11 @@ data "azurerm_subscription" "current" {}
 
 locals {
   custom_url_prefix_full = var.env == "prod" ? var.custom_url_prefix : "${var.custom_url_prefix}-${var.env[0]}"
-  common_tags            = {
-    Environment = var.env[0]
-    WorkloadName     = "CloudResumeChallenge"
+  common_tags = {
+    Environment        = var.env[0]
+    WorkloadName       = "CloudResumeChallenge"
     DataClassification = "Public"
-    Criticality = "Non-Critical"
+    Criticality        = "Non-Critical"
   }
 }
 
@@ -30,7 +30,7 @@ data "azurerm_user_assigned_identity" "this" {
 resource "azurerm_resource_group" "this" {
   location = var.resource_location
   name     = module.naming.resource_group.name
-  tags = local.common_tags
+  tags     = local.common_tags
 }
 
 # Create Storage Account to host the Function App
@@ -41,7 +41,7 @@ resource "azurerm_storage_account" "this" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
-  tags = local.common_tags
+  tags                     = local.common_tags
 }
 
 # Create  App Service Plan with serverless pricing tier
@@ -51,7 +51,7 @@ resource "azurerm_service_plan" "this" {
   resource_group_name = azurerm_resource_group.this.name
   os_type             = "Linux"
   sku_name            = "Y1"
-  tags = local.common_tags
+  tags                = local.common_tags
 }
 
 # Create the Function App
@@ -214,7 +214,7 @@ resource "azurerm_key_vault_secret" "cosmosdb_connection_string" { #tfsec:ignore
   key_vault_id = azurerm_key_vault.this.id
   content_type = "Connection String"
   depends_on   = [azurerm_role_assignment.kv_administrator_mid]
-  tags = local.common_tags
+  tags         = local.common_tags
 }
 
 # Get the Azure DNS Zone
@@ -251,9 +251,9 @@ resource "azurerm_api_management_named_value" "this" {
   display_name        = "${azurerm_linux_function_app.this.name}-key"
   resource_group_name = azurerm_api_management.this.resource_group_name
   api_management_name = azurerm_api_management.this.name
-  secret = true
-  value  = data.azurerm_function_app_host_keys.this.default_function_key
-  tags = local.common_tags
+  secret              = true
+  value               = data.azurerm_function_app_host_keys.this.default_function_key
+  tags                = local.common_tags
 }
 
 # Create a Backend for the Function App in APIM
@@ -358,7 +358,7 @@ resource "azurerm_dns_cname_record" "apim_gateway" {
   resource_group_name = data.azurerm_dns_zone.this.resource_group_name
   ttl                 = 300
   record              = trimprefix(azurerm_api_management.this.gateway_url, "https://")
-  tags = local.common_tags
+  tags                = local.common_tags
 }
 
 # Refresh the login credentials for Azure
