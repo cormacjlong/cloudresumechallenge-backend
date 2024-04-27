@@ -230,7 +230,7 @@ resource "azurerm_key_vault_secret" "cosmosdb_connection_string" { #tfsec:ignore
   value        = "DefaultEndpointsProtocol=https;AccountName=${azurerm_cosmosdb_account.this.name};AccountKey=${azurerm_cosmosdb_account.this.primary_key};TableEndpoint=https://${azurerm_cosmosdb_account.this.name}.table.cosmos.azure.com:443/;"
   key_vault_id = azurerm_key_vault.this.id
   content_type = "Connection String"
-  depends_on   = [azurerm_role_assignment.mi_keyvault_role_assignment]
+  depends_on   = [azurerm_role_assignment.kv_administrator_mid]
 }
 
 # Get the Azure DNS Zone
