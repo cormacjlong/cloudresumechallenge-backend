@@ -37,11 +37,9 @@ jobs:
 
     - name: Setup Python Environment
       uses: actions/setup-python@v4
-      with:
-        python-version: '3.11.9'
 
-    # Install Python dependcies and run unit tests
-    - name: Run API unit tests
+    # Install Python dependcies
+    - name: Install Python dependcies
       shell: bash
       run: |
         pushd './api/' > /dev/null
@@ -167,15 +165,6 @@ jobs:
         name: tfplan
         path: ./terraform/
 
-    # Login to Azure. Needed to ensure APIM custom domain can be added, because of local-exec script use.
-    - name: Login to Azure
-      id: LoginToAzure
-      uses: azure/login@v2
-      with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
     # Terraform Apply
     - name: Terraform Apply
       id: tf-apply
@@ -195,6 +184,15 @@ jobs:
         "function_app_name=$(((Select-String -Path ./apply_output.txt -Pattern 'function_app_name').line -split '"')[1])" >> $env:GITHUB_OUTPUT
         "function_app_python_version=$(((Select-String -Path ./apply_output.txt -Pattern 'function_app_python_version').line -split '"')[1])" >> $env:GITHUB_OUTPUT
       working-directory: ./terraform
+
+    # Login to Azure and deploy Function App.
+    - name: Login to Azure
+      id: LoginToAzure
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: 'Deploy API to Function App'
       uses: Azure/functions-action@v1
