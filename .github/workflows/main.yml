@@ -22,8 +22,8 @@ env:
   ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
 
 jobs:
-  checks:
-    name: 'Checks'
+  pre-deployment-checks:
+    name: 'Pre-deployment checks'
     runs-on: ubuntu-latest
     env:
       ARM_SKIP_PROVIDER_REGISTRATION: true
@@ -34,6 +34,20 @@ jobs:
     # Checkout the repository to the GitHub Actions runner.
     - name: Checkout
       uses: actions/checkout@v3
+
+    - name: Setup Python Environment
+      uses: actions/setup-python@v4
+
+    # Install Python dependcies and run unit tests
+    - name: Run API unit tests
+      shell: bash
+      run: |
+        pushd './api/' > /dev/null
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+        popd
+        echo "PYTHONPATH=${GITHUB_WORKSPACE}/api/.python_packages/lib/site-packages" >> $GITHUB_ENV
+        python -m unittest discover -s ./tests -v
 
     # Install the latest version of the Terraform CLI
     - name: Setup Terraform
@@ -119,16 +133,12 @@ jobs:
       run: |
         echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY
         
-  terraform-apply:
-    name: 'Terraform Apply'
+  deployment:
+    name: 'Deployment'
     runs-on: ubuntu-latest
-    needs: [checks]
+    needs: [pre-deployment-checks]
     #environment:
     #  name: 'dev'
-
-    outputs:
-      function_app_name: ${{ steps.tf-apply-outputs.outputs.function_app_name }}
-      function_app_python_version: ${{ steps.tf-apply-outputs.outputs.function_app_python_version }}
     
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -180,48 +190,11 @@ jobs:
         "function_app_python_version=$(((Select-String -Path ./apply_output.txt -Pattern 'function_app_python_version').line -split '"')[1])" >> $env:GITHUB_OUTPUT
       working-directory: ./terraform
 
-  deploy-api:
-    name: 'Deploy API'
-    runs-on: ubuntu-latest
-    needs: [terraform-apply]
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-
-    - name: Setup Python ${{ needs.terraform-apply.outputs.function_app_python_version }} Environment
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ needs.terraform-apply.outputs.function_app_python_version }}
-
-    - name: Package dependencies for deployment
-      shell: bash
-      run: |
-        pushd './api/' > /dev/null
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt --target=".python_packages/lib/site-packages"
-        popd
-        echo "PYTHONPATH=${GITHUB_WORKSPACE}/api/.python_packages/lib/site-packages" >> $GITHUB_ENV
-
-    - name: Run unit tests
-      run: |
-        pushd './api/' > /dev/null
-        python -m unittest discover -s ./tests -v
-
-    - name: Login to Azure
-      id: LoginToAzure
-      uses: azure/login@v2
-      with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        enable-AzPSSession: true
-
     - name: 'Deploy API to Function App'
       uses: Azure/functions-action@v1
       id: fa
       with:
-        app-name: ${{ needs.terraform-apply.outputs.function_app_name }}
+        app-name: ${{ steps.tf-apply-outputs.outputs.function_app_name }}
         package: "./api"
         scm-do-build-during-deployment: true
         enable-oryx-build: true
