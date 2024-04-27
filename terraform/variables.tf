@@ -61,7 +61,13 @@ variable "connection_string_secret_name" {
 variable "logging_on" {
   type        = bool
   description = "Turning this on will create a Log Analytics Workspace and configure logging for resources."
-  default     = false
+  default     = true
+}
+
+variable "logging_resource_group_name" {
+  type        = string
+  description = "The name of the resource group to create the logging resources in."
+  default     = "rg-platform-management"
 }
 
 variable "api_endpoint_name" {

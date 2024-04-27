@@ -152,45 +152,6 @@ resource "azurerm_role_assignment" "sa_blobowner_mid" {
   principal_id         = data.azurerm_user_assigned_identity.this.principal_id
 }
 
-# Create a Log Analytics Workspace for Application Insights
-resource "azurerm_log_analytics_workspace" "this" {
-  count               = var.logging_on ? 1 : 0
-  location            = azurerm_resource_group.this.location
-  name                = module.naming.log_analytics_workspace.name
-  resource_group_name = azurerm_resource_group.this.name
-  sku                 = "PerGB2018"
-  retention_in_days   = 30
-  daily_quota_gb      = 1
-}
-
-# Create Application Insights
-resource "azurerm_application_insights" "this" {
-  count               = var.logging_on ? 1 : 0
-  location            = azurerm_resource_group.this.location
-  name                = module.naming.application_insights.name
-  resource_group_name = azurerm_resource_group.this.name
-  application_type    = "other"
-  workspace_id        = azurerm_log_analytics_workspace.this[0].id
-}
-resource "azurerm_monitor_action_group" "this" {
-  count               = var.logging_on ? 1 : 0
-  name                = "Application Insights Smart Detection"
-  resource_group_name = azurerm_resource_group.this.name
-  short_name          = "aisd"
-}
-resource "azurerm_monitor_smart_detector_alert_rule" "this" {
-  count               = var.logging_on ? 1 : 0
-  name                = "Failure Anomalies - ${azurerm_application_insights.this[0].name}"
-  resource_group_name = azurerm_resource_group.this.name
-  detector_type       = "FailureAnomaliesDetector"
-  scope_resource_ids  = [azurerm_application_insights.this[0].id]
-  severity            = "Sev0"
-  frequency           = "PT1M"
-  action_group {
-    ids = [azurerm_monitor_action_group.this[0].id]
-  }
-}
-
 # Create Keyvault
 resource "azurerm_key_vault" "this" {
   location                        = azurerm_resource_group.this.location
