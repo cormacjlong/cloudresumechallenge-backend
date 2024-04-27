@@ -37,8 +37,6 @@ jobs:
 
     - name: Setup Python Environment
       uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
 
     # Install Python dependcies and run unit tests
     - name: Run API unit tests
@@ -49,6 +47,7 @@ jobs:
         pip install -r requirements.txt --target=".python_packages/lib/site-packages"
         popd
         echo "PYTHONPATH=${GITHUB_WORKSPACE}/api/.python_packages/lib/site-packages" >> $GITHUB_ENV
+        pushd './api/' > /dev/null
         python -m unittest discover -s ./tests -v
 
     # Install the latest version of the Terraform CLI
