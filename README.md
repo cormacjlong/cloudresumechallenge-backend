@@ -27,9 +27,9 @@ The backend is responsible for tracking the number of visitors to the site. It's
 
 ToDo
 
-## Deployment
+## Diagram
 
-ToDo
+![ToDo](https://raw.githubusercontent.com/cormacjlong/cloudresumechallenge-backend/main/docs/diagram.svg)
 
 ## Contributing
 
