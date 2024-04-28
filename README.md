@@ -16,7 +16,8 @@ The backend is responsible for tracking the number of visitors to the site. It's
 - `variables.tf`: This file contains the Terraform variables.
 - `output.tf`: This file defines the outputs of the Terraform configuration.
 - `modules/`: This directory contains the Terraform modules.
-- `tests/`: This directory contains the unit tests.
+- `api/`: This directory contains the API written in Python.
+- `api/tests/`: This directory contains the unit tests.
 
 ## Setup
 
