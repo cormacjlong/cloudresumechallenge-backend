@@ -4,7 +4,7 @@ This repository contains the backend code for my Cloud Resume Challenge project,
 
 ## Overview
 
-The backend is responsible for tracking the number of visitors to the site. It's built using Azure Functions, Key Vault, APIM, Cosmos and Terraform for infrastructure as code.
+The backend is responsible for tracking the number of visitors to the site. It's built using Azure Functions, Key Vault, APIM, Cosmos and Terraform.
 
 ## Prerequisites
 
@@ -27,14 +27,6 @@ The backend is responsible for tracking the number of visitors to the site. It's
 
 ToDo
 
-## Diagram
+## Backend Flowchart
 
 ![ToDo](https://raw.githubusercontent.com/cormacjlong/cloudresumechallenge-backend/main/docs/diagram.svg)
-
-## Contributing
-
-Contributions are welcome. Please open an issue or submit a pull request.
-
-## License
-
-ToDo
