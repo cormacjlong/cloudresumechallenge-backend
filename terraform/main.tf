@@ -361,14 +361,17 @@ resource "azurerm_dns_cname_record" "apim_gateway" {
 # Add custom domain to APIM
 resource "null_resource" "apim_customdomain" {
   triggers = {
-    apim_name = azurerm_api_management.this.name
-    rg        = azurerm_api_management.this.resource_group_name
-    api_url   = substr(azurerm_dns_cname_record.apim_gateway.fqdn, 0, length(azurerm_dns_cname_record.apim_gateway.fqdn) - 1)
+    apim_name       = azurerm_api_management.this.name
+    rg              = azurerm_api_management.this.resource_group_name
+    api_url         = substr(azurerm_dns_cname_record.apim_gateway.fqdn, 0, length(azurerm_dns_cname_record.apim_gateway.fqdn) - 1)
+    client_id       = data.azurerm_client_config.current.client_id
+    tenant_id       = data.azurerm_client_config.current.tenant_id
+    subscription_id = data.azurerm_client_config.current.subscription_id
   }
 
   provisioner "local-exec" {
     command     = <<-EOT
-      ./refresh.sh client_id=${data.azurerm_client_config.current.client_id} tenant_id=${data.azurerm_client_config.current.tenant_id} subscription_id=${data.azurerm_client_config.current.subscription_id}
+      ./refresh.sh client_id=${self.triggers.client_id} tenant_id=${self.triggers.tenant_id} subscription_id=${self.triggers.subscription_id}
       sleep 10
       az apim update -n ${self.triggers.apim_name} -g ${self.triggers.rg} --set hostnameConfigurations='[{\"hostName\":\"${self.triggers.api_url}\",\"type\":\"Proxy\",\"certificateSource\":\"Managed\"}]'
     EOT
@@ -378,7 +381,7 @@ resource "null_resource" "apim_customdomain" {
   provisioner "local-exec" {
     when        = destroy
     command     = <<-EOT
-      ./refresh.sh client_id=${data.azurerm_client_config.current.client_id} tenant_id=${data.azurerm_client_config.current.tenant_id} subscription_id=${data.azurerm_client_config.current.subscription_id}
+      ./refresh.sh client_id=${self.triggers.client_id} tenant_id=${self.triggers.tenant_id} subscription_id=${self.triggers.subscription_id}
       sleep 10
       az apim update -n ${self.triggers.apim_name} -g ${self.triggers.rg} --remove hostnameConfigurations"
     EOT
