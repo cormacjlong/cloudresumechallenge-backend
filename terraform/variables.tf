@@ -13,7 +13,7 @@ variable "project_prefix" {
 variable "env" {
   type        = string
   description = "The environment currently being deployed."
-  default     = "dev"
+  default     = "prod"
 }
 
 variable "custom_url_prefix" {
