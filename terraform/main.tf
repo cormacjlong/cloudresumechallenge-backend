@@ -370,7 +370,7 @@ resource "null_resource" "apim_customdomain" {
   }
 
   provisioner "local-exec" {
-    command = "chmod +x ./refresh.sh; ./refresh.sh"
+    command = "chmod +x ./refresh.sh; ./refresh.sh --client_id $client_id --tenant_id $tenant_id --subscription_id $subscription_id"
     environment = {
       tenant_id       = self.triggers.tenant_id
       subscription_id = self.triggers.subscription_id
@@ -385,7 +385,7 @@ resource "null_resource" "apim_customdomain" {
 
   provisioner "local-exec" {
     when    = destroy
-    command = "chmod +x ./refresh.sh; ./refresh.sh"
+    command = "chmod +x ./refresh.sh; ./refresh.sh --client_id $client_id --tenant_id $tenant_id --subscription_id $subscription_id"
     environment = {
       tenant_id       = self.triggers.tenant_id
       subscription_id = self.triggers.subscription_id
