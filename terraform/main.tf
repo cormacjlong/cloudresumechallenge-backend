@@ -370,21 +370,32 @@ resource "null_resource" "apim_customdomain" {
   }
 
   provisioner "local-exec" {
-    command     = <<-EOT
-      ./refresh.sh client_id=${self.triggers.client_id} tenant_id=${self.triggers.tenant_id} subscription_id=${self.triggers.subscription_id}
-      sleep 10
-      az apim update -n ${self.triggers.apim_name} -g ${self.triggers.resource_group_name} --set hostnameConfigurations='[{\"hostName\":\"${self.triggers.api_url}\",\"type\":\"Proxy\",\"certificateSource\":\"Managed\"}]'
-    EOT
+    command = "chmod +x ./refresh.sh; ./refresh.sh"
+    environment = {
+      tenant_id       = self.triggers.tenant_id
+      subscription_id = self.triggers.subscription_id
+      client_id       = self.triggers.client_id
+    }
     working_dir = "${path.module}/../scripts/"
   }
 
   provisioner "local-exec" {
-    when        = destroy
-    command     = <<-EOT
-      ./refresh.sh client_id=${self.triggers.client_id} tenant_id=${self.triggers.tenant_id} subscription_id=${self.triggers.subscription_id}
-      sleep 10
-      az apim update -n ${self.triggers.apim_name} -g ${self.triggers.resource_group_name} --remove hostnameConfigurations"
-    EOT
+    command = "sleep 10; az apim update -n ${self.triggers.apim_name} -g ${self.triggers.resource_group_name} --set hostnameConfigurations='[{\"hostName\":\"${self.triggers.api_url}\",\"type\":\"Proxy\",\"certificateSource\":\"Managed\"}]'"
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = "chmod +x ./refresh.sh; ./refresh.sh"
+    environment = {
+      tenant_id       = self.triggers.tenant_id
+      subscription_id = self.triggers.subscription_id
+      client_id       = self.triggers.client_id
+    }
     working_dir = "${path.module}/../scripts/"
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = "sleep 10; az apim update -n ${self.triggers.apim_name} -g ${self.triggers.resource_group_name} --remove hostnameConfigurations"
   }
 }
