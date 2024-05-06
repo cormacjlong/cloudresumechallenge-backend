@@ -372,9 +372,9 @@ resource "null_resource" "apim_customdomain" {
   provisioner "local-exec" {
     command = "chmod +x ./refresh.sh; ./refresh.sh --client_id $client_id --tenant_id $tenant_id --subscription_id $subscription_id"
     environment = {
-      tenant_id       = self.triggers.tenant_id
-      subscription_id = self.triggers.subscription_id
-      client_id       = self.triggers.client_id
+      AZURE_TENANT_ID       = self.triggers.tenant_id
+      AZURE_SUBSCRIPTION_ID = self.triggers.subscription_id
+      AZURE_CLIENT_ID       = self.triggers.client_id
     }
     working_dir = "${path.module}/../scripts/"
   }
@@ -387,9 +387,9 @@ resource "null_resource" "apim_customdomain" {
     when    = destroy
     command = "chmod +x ./refresh.sh; ./refresh.sh --client_id $client_id --tenant_id $tenant_id --subscription_id $subscription_id"
     environment = {
-      tenant_id       = self.triggers.tenant_id
-      subscription_id = self.triggers.subscription_id
-      client_id       = self.triggers.client_id
+      AZURE_TENANT_ID       = self.triggers.tenant_id
+      AZURE_SUBSCRIPTION_ID = self.triggers.subscription_id
+      AZURE_CLIENT_ID       = self.triggers.client_id
     }
     working_dir = "${path.module}/../scripts/"
   }

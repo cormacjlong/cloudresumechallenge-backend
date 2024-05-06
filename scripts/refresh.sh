@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-eval "$(jq -r '@sh "AZURE_CLIENT_ID=\(.client_id) AZURE_TENANT_ID=\(.tenant_id) AZURE_SUBSCRIPTION_ID=\(.subscription_id)"')"
+#eval "$(jq -r '@sh "AZURE_CLIENT_ID=\(.client_id) AZURE_TENANT_ID=\(.tenant_id) AZURE_SUBSCRIPTION_ID=\(.subscription_id)"')"
 
 if [[ "$ACTIONS_ID_TOKEN_REQUEST_TOKEN" == "" ]] || [[ "$ACTIONS_ID_TOKEN_REQUEST_URL" == "" ]]
 then
