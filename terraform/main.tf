@@ -234,7 +234,7 @@ resource "azurerm_api_management" "this" {
   identity {
     type = "SystemAssigned"
   }
-  tags = concat(local.common_tags, [{ "api-url" = "${local.custom_url_prefix_full}-api.${var.azure_dns_zone_name}" }])
+  tags = merge(local.common_tags, { "api-url" = "${local.custom_url_prefix_full}-api.${var.azure_dns_zone_name}" })
 }
 
 # Get Function App Keys
