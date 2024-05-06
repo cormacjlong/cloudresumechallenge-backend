@@ -358,17 +358,6 @@ resource "azurerm_dns_cname_record" "apim_gateway" {
   tags                = local.common_tags
 }
 
-# Refresh the login credentials for Azure
-data "external" "login" {
-  program = ["bash", "${path.module}/../scripts/refresh.sh"]
-  query = {
-    client_id       = data.azurerm_client_config.current.client_id
-    tenant_id       = data.azurerm_client_config.current.tenant_id
-    subscription_id = data.azurerm_client_config.current.subscription_id
-  }
-  depends_on = [azurerm_api_management.this]
-}
-
 # Add custom domain to APIM
 resource "null_resource" "apim_customdomain" {
   triggers = {
@@ -378,12 +367,21 @@ resource "null_resource" "apim_customdomain" {
   }
 
   provisioner "local-exec" {
-    command = "sleep 10 && az apim update -n ${self.triggers.apim_name} -g ${self.triggers.rg} --set hostnameConfigurations='[{\"hostName\":\"${self.triggers.api_url}\",\"type\":\"Proxy\",\"certificateSource\":\"Managed\"}]'"
+    command     = <<-EOT
+      ./refresh.sh client_id=${data.azurerm_client_config.current.client_id} tenant_id=${data.azurerm_client_config.current.tenant_id} subscription_id=${data.azurerm_client_config.current.subscription_id}
+      sleep 10
+      az apim update -n ${self.triggers.apim_name} -g ${self.triggers.rg} --set hostnameConfigurations='[{\"hostName\":\"${self.triggers.api_url}\",\"type\":\"Proxy\",\"certificateSource\":\"Managed\"}]'
+    EOT
+    working_dir = "${path.module}/../scripts/"
   }
 
   provisioner "local-exec" {
-    when    = destroy
-    command = "sleep 10 && az apim update -n ${self.triggers.apim_name} -g ${self.triggers.rg} --remove hostnameConfigurations"
+    when        = destroy
+    command     = <<-EOT
+      ./refresh.sh client_id=${data.azurerm_client_config.current.client_id} tenant_id=${data.azurerm_client_config.current.tenant_id} subscription_id=${data.azurerm_client_config.current.subscription_id}
+      sleep 10
+      az apim update -n ${self.triggers.apim_name} -g ${self.triggers.rg} --remove hostnameConfigurations"
+    EOT
+    working_dir = "${path.module}/../scripts/"
   }
-  depends_on = [data.external.login]
 }
