@@ -383,7 +383,7 @@ resource "null_resource" "apim_customdomain" {
 
   provisioner "local-exec" {
     when    = destroy
-    command = "az apim update -n ${self.triggers.apim_name} -g ${self.triggers.rg} --remove hostnameConfigurations"
+    command = "sleep 10 && az apim update -n ${self.triggers.apim_name} -g ${self.triggers.rg} --remove hostnameConfigurations"
   }
   depends_on = [data.external.login]
 }
