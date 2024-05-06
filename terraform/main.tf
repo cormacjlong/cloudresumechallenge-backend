@@ -371,6 +371,7 @@ resource "null_resource" "apim_customdomain" {
 
   provisioner "local-exec" {
     command     = <<-EOT
+      chmod +x ./refresh.sh
       ./refresh.sh client_id=${self.triggers.client_id} tenant_id=${self.triggers.tenant_id} subscription_id=${self.triggers.subscription_id}
       sleep 10
       az apim update -n ${self.triggers.apim_name} -g ${self.triggers.resource_group_name} --set hostnameConfigurations='[{\"hostName\":\"${self.triggers.api_url}\",\"type\":\"Proxy\",\"certificateSource\":\"Managed\"}]'
@@ -381,6 +382,7 @@ resource "null_resource" "apim_customdomain" {
   provisioner "local-exec" {
     when        = destroy
     command     = <<-EOT
+      chmod +x ./refresh.sh
       ./refresh.sh client_id=${self.triggers.client_id} tenant_id=${self.triggers.tenant_id} subscription_id=${self.triggers.subscription_id}
       sleep 10
       az apim update -n ${self.triggers.apim_name} -g ${self.triggers.resource_group_name} --remove hostnameConfigurations"
