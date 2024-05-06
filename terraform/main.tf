@@ -234,7 +234,7 @@ resource "azurerm_api_management" "this" {
   identity {
     type = "SystemAssigned"
   }
-  tags = local.common_tags
+  tags = concat(local.common_tags, { "api-url" = substr(azurerm_dns_cname_record.apim_gateway.fqdn, 0, length(azurerm_dns_cname_record.apim_gateway.fqdn) - 1) })
 }
 
 # Get Function App Keys
