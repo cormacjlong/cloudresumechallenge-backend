@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+# Commenting below line out because we've set the environment variables in Terraform
 #eval "$(jq -r '@sh "AZURE_CLIENT_ID=\(.client_id) AZURE_TENANT_ID=\(.tenant_id) AZURE_SUBSCRIPTION_ID=\(.subscription_id)"')"
 
 if [[ "$ACTIONS_ID_TOKEN_REQUEST_TOKEN" == "" ]] || [[ "$ACTIONS_ID_TOKEN_REQUEST_URL" == "" ]]
