@@ -33,7 +33,7 @@ resource "azurerm_resource_group" "this" {
 
 # Create Storage Account to host the Function App
 resource "azurerm_storage_account" "this" {
-  name                     = "st${replace(module.naming.function_app.name_unique, "-", "")}"
+  name                     = module.naming.storage_account.name_unique
   resource_group_name      = azurerm_resource_group.this.name
   location                 = azurerm_resource_group.this.location
   account_tier             = "Standard"
