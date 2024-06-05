@@ -40,6 +40,11 @@ resource "azurerm_storage_account" "this" {
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
   tags                     = local.common_tags
+  blob_properties {
+    delete_retention_policy {
+      days = 1
+    }
+  }
 }
 
 # Create  App Service Plan with serverless pricing tier
