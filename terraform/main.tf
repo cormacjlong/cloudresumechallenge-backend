@@ -13,7 +13,7 @@ locals {
 # Naming module to ensure all resources have naming standard applied
 module "naming" {
   source      = "Azure/naming/azurerm"
-  suffix      = concat(var.project_prefix, [var.env])
+  suffix      = concat([var.env], var.project_prefix)
   unique-seed = data.azurerm_client_config.current.subscription_id
   version     = "0.4.1"
 }
